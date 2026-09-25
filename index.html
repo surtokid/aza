@@ -2,12 +2,12 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PLAY & LEARN 🌈 1000 Petualangan Belajar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PLAY & LEARN 🌈 Petualangan Belajar</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Quicksand & Fredoka -->
+  <!-- Google Fonts: Fredoka & Quicksand -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@600;700;800&display=swap" rel="stylesheet">
@@ -19,11 +19,17 @@
       --font-body: 'Quicksand', sans-serif;
       --font-heading: 'Fredoka', cursive, sans-serif;
     }
-    body {
-      font-family: var(--font-body);
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
+    }
+    body, html {
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: var(--font-body);
       touch-action: manipulation;
     }
     h1, h2, h3, .font-fun {
@@ -31,776 +37,739 @@
     }
     .btn-bubbly {
       transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.14), 0 12px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.16);
     }
     .btn-bubbly:active {
-      transform: translateY(5px);
-      box-shadow: 0 3px 0 rgba(0, 0, 0, 0.14), 0 5px 10px rgba(0, 0, 0, 0.05);
+      transform: translateY(3px) scale(0.96);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.16);
     }
     .card-choice {
-      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
-      box-shadow: 0 8px 0 #cbd5e1, 0 14px 22px rgba(0, 0, 0, 0.07);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12), 0 10px 15px -3px rgba(0, 0, 0, 0.08);
     }
     .card-choice:active {
-      transform: translateY(6px) scale(0.97);
-      box-shadow: 0 2px 0 #cbd5e1, 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
-    @keyframes floatSlow {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-7px) rotate(1.5deg); }
-    }
-    @keyframes pulseSoft {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      transform: translateY(4px) scale(0.95);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
     }
     @keyframes wiggle {
       0%, 100% { transform: rotate(-5deg); }
       50% { transform: rotate(5deg); }
     }
-    .animate-float {
-      animation: floatSlow 3s ease-in-out infinite;
+    @keyframes floatGentle {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
     }
-    .animate-pulse-soft {
-      animation: pulseSoft 1.8s ease-in-out infinite;
+    @keyframes bubbleFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-8px) scale(1.03); }
     }
     .animate-wiggle {
       animation: wiggle 1s ease-in-out infinite;
     }
-    ::-webkit-scrollbar {
-      width: 8px;
+    .animate-float {
+      animation: floatGentle 2.4s ease-in-out infinite;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
+    .animate-bubble {
+      animation: bubbleFloat 2s ease-in-out infinite;
     }
   </style>
 </head>
 
-<body class="bg-gradient-to-b from-sky-100 via-amber-50 to-pink-100 min-h-screen text-slate-800 overflow-x-hidden pb-12">
+<body class="bg-gradient-to-b from-sky-200 via-amber-100 to-pink-100 text-slate-800 flex flex-col h-[100dvh] w-full overflow-hidden select-none">
 
-  <!-- Header Atas -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-4 border-amber-200 shadow-sm px-4 py-3">
-    <div class="max-w-4xl mx-auto flex items-center justify-between">
-      
-      <!-- Tombol Kembali / Logo -->
-      <div class="flex items-center gap-3">
-        <button id="btn-header-back" onclick="navigateTo('home')" class="hidden btn-bubbly bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3.5 py-2 rounded-2xl flex items-center gap-1.5 border-2 border-amber-500 text-sm">
-          <span>⬅️</span>
-          <span class="hidden sm:inline">Menu</span>
-        </button>
+  <!-- ================= HEADER ATAS (RINGKAS & RAMPING UNTUK HP) ================= -->
+  <header class="flex-shrink-0 z-40 bg-white/95 border-b-2 border-amber-300 shadow-sm px-3 py-1.5 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <!-- Tombol Balik ke Peta (Hanya saat aktivitas) -->
+      <button id="btn-back-home" onclick="navigateTo('home')" class="hidden btn-bubbly bg-amber-400 text-slate-900 font-bold px-2.5 py-1 rounded-xl border border-amber-500 text-xs flex items-center gap-1">
+        <span>🗺️</span> <span>Peta</span>
+      </button>
 
-        <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
-          <span class="text-3xl animate-float">🌈</span>
-          <div>
-            <h1 class="text-xl sm:text-2xl font-black text-rose-500 leading-none tracking-wide">PLAY & LEARN</h1>
-            <p class="text-xs sm:text-sm font-bold text-sky-600">1.000 Petualangan Visual 🎯</p>
-          </div>
+      <!-- Logo Mini -->
+      <div class="flex items-center gap-1 cursor-pointer" onclick="navigateTo('home')">
+        <span class="text-xl animate-float">🌈</span>
+        <div>
+          <h1 class="text-sm font-black text-rose-500 leading-none">PLAY & LEARN</h1>
+          <p class="text-[10px] font-bold text-sky-600 leading-none">Petualangan Ceria</p>
         </div>
       </div>
+    </div>
 
-      <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Chip Nama Siswa -->
-        <button onclick="openNameModal(true)" title="Ganti Nama Siswa" class="btn-bubbly bg-pink-100 hover:bg-pink-200 border-2 border-pink-300 px-3 py-1.5 rounded-2xl flex items-center gap-1.5 text-pink-800 text-xs sm:text-sm font-black shadow-sm">
-          <span id="student-avatar-display">👧</span>
-          <span id="student-name-display" class="max-w-[85px] sm:max-w-[130px] truncate">Teman Kecil</span>
-          <span class="text-xs opacity-60">✏️</span>
-        </button>
+    <!-- Info Murid & Bintang -->
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <!-- Nama Murid -->
+      <button onclick="openNameModal(true)" class="btn-bubbly bg-pink-50 border border-pink-300 px-2 py-1 rounded-xl flex items-center gap-1 text-pink-700 text-xs font-black">
+        <span id="header-avatar">👧</span>
+        <span id="header-student-name" class="max-w-[70px] truncate">Teman</span>
+      </button>
 
-        <!-- Indikator Bintang -->
-        <div class="bg-amber-100 border-2 border-amber-300 px-3 py-1.5 rounded-2xl flex items-center gap-1 shadow-inner">
-          <span class="text-xl text-amber-500 animate-wiggle">⭐</span>
-          <span id="star-counter" class="text-base sm:text-lg font-black text-amber-800">0</span>
-        </div>
-
-        <!-- Tombol Suara On / Off -->
-        <button id="btn-toggle-voice" onclick="toggleVoiceGlobal()" title="Aktifkan / Matikan Suara" class="btn-bubbly bg-rose-400 hover:bg-rose-300 border-2 border-rose-500 text-white w-10 h-10 rounded-2xl flex items-center justify-center text-lg">
-          🔊
-        </button>
-
-        <!-- Area Orang Tua -->
-        <button onclick="openParentModal()" title="Area Orang Tua" class="btn-bubbly bg-indigo-100 hover:bg-indigo-200 border-2 border-indigo-300 text-indigo-700 px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1">
-          <span>👨‍👩‍👧</span>
-          <span class="hidden md:inline">Orang Tua</span>
-        </button>
+      <!-- Bintang -->
+      <div class="bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-xl flex items-center gap-1 shadow-inner">
+        <span class="text-sm text-amber-500 animate-wiggle">⭐</span>
+        <span id="header-star-count" class="text-xs font-black text-amber-800">0</span>
       </div>
 
+      <!-- Tombol Suara On/Off -->
+      <button id="btn-toggle-sound" onclick="toggleSoundGlobal()" class="btn-bubbly bg-rose-400 border border-rose-500 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs">
+        🔊
+      </button>
+
+      <!-- Area Orang Tua -->
+      <button onclick="openParentModal()" class="btn-bubbly bg-indigo-50 border border-indigo-200 text-indigo-700 px-2 py-1 rounded-xl text-xs font-bold">
+        👨‍👩‍👧
+      </button>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 pt-6">
+  <!-- ================= AREA KONTEN UTAMA (PAS 100% LAYAR TANPA SCROLL) ================= -->
+  <main class="flex-1 flex flex-col min-h-0 w-full max-w-md mx-auto p-2 sm:p-3 relative overflow-hidden">
 
-    <!-- ========================================== -->
-    <!-- VIEW 1: HOME VIEW                          -->
-    <!-- ========================================== -->
-    <div id="view-home" class="space-y-6">
+    <!-- ==================== VIEW 1: HOME (PETA LEVEL MOBILE) ==================== -->
+    <div id="view-home" class="flex-1 flex flex-col justify-between h-full min-h-0 space-y-2">
       
-      <!-- Banner Sapaan Ibu Guru PAUD -->
-      <div class="relative bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 text-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-white overflow-hidden">
-        <div class="absolute -right-8 -bottom-8 w-44 h-44 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-        <div class="relative z-10 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
-          
-          <!-- Avatar Ibu Guru Interaktif -->
-          <div id="avatar-guru" class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-amber-100 border-4 border-white shadow-lg flex items-center justify-center text-5xl sm:text-6xl animate-float flex-shrink-0 transition-transform">
-            👩‍🏫
-            <span id="voice-waves" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold animate-pulse shadow">Bicara...</span>
-          </div>
-
-          <div class="flex-1">
-            <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
-              <span>👀</span> Visual 100% — Tanpa Perlu Membaca Teks
-            </div>
-            <h2 id="home-greeting-heading" class="text-2xl sm:text-3xl font-black text-amber-200">
-              Halo Teman Kecil!
-            </h2>
-            <p id="home-greeting-sub" class="text-white/95 text-base sm:text-lg font-medium mt-1">
-              Dengarkan suara ramah Ibu Guru, lihat gambar besarnya, lalu sentuh pilihanmu ya!
-            </p>
-          </div>
-
-          <button onclick="playTeacherIntroGreeting()" class="btn-bubbly bg-yellow-300 hover:bg-yellow-200 text-slate-800 font-black px-5 py-3 rounded-2xl border-2 border-yellow-400 flex items-center gap-2 text-base shadow flex-shrink-0">
-            <span>🔊</span> Sapa Ibu Guru
-          </button>
+      <!-- Kartu Ibu Guru & Sapaan -->
+      <div class="bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 rounded-2xl p-2.5 text-white shadow-md border-2 border-white flex items-center gap-2.5 flex-shrink-0">
+        <div id="home-teacher-avatar" class="w-12 h-12 rounded-2xl bg-amber-100 border-2 border-white flex items-center justify-center text-2xl flex-shrink-0 shadow animate-float cursor-pointer" onclick="playIntroVoice()">
+          👩‍🏫
         </div>
-      </div>
-
-      <!-- TOMBOL SATUKAN SEMUA SOAL (1000 SOAL VISUAL) -->
-      <div class="bg-gradient-to-r from-amber-400 via-rose-400 to-pink-500 rounded-3xl p-6 text-white shadow-xl border-4 border-white flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-        <div class="space-y-1">
-          <div class="inline-flex items-center gap-1 bg-white/25 px-3 py-0.5 rounded-full text-xs font-black uppercase">
-            <span>🌟</span> Petualangan Akbar 1.000 Soal
-          </div>
-          <h3 class="text-2xl sm:text-3xl font-black">Mainkan 1.000 Soal Visual Sekaligus!</h3>
-          <p class="text-white/95 text-sm sm:text-base font-semibold">
-            Semua soal bergambar raksasa, mudah dimengerti anak 3 tahun hanya dengan melihat!
-          </p>
+        <div class="flex-1 min-w-0">
+          <div class="text-[10px] font-bold text-amber-200 uppercase tracking-wide">Ibu Guru PAUD</div>
+          <h2 id="home-greeting-text" class="text-sm sm:text-base font-black truncate leading-tight">Halo Teman Kecil!</h2>
+          <p class="text-[11px] text-white/90 truncate font-semibold">Yuk main dari level termudah!</p>
         </div>
-
-        <button onclick="startUnifiedAdventure()" class="btn-bubbly bg-white hover:bg-amber-50 text-rose-600 font-black px-6 py-4 rounded-2xl border-2 border-rose-300 text-lg shadow-lg flex items-center gap-2 flex-shrink-0 animate-pulse-soft">
-          <span>🚀</span> Mulai Main Sekarang!
+        <button onclick="playIntroVoice()" class="btn-bubbly bg-amber-300 text-slate-800 text-[11px] font-black px-2 py-1 rounded-xl border border-amber-400 flex items-center gap-1 flex-shrink-0">
+          🔊 Sapa
         </button>
       </div>
 
-      <!-- Pilihan Berdasarkan Kategori -->
-      <div>
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl sm:text-2xl font-black text-slate-800 flex items-center gap-2">
-            <span>🎯</span> Atau Pilih Tema Bermain
-          </h3>
-          <span class="text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full shadow-sm">
-            Total 1.000 Soal Visual
-          </span>
+      <!-- Tombol Raksasa Main Langsung -->
+      <button onclick="startCurrentLevelAdventure()" class="btn-bubbly bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 text-white rounded-2xl p-3 border-2 border-white shadow-lg flex items-center justify-between flex-shrink-0 active:scale-98">
+        <div class="text-left">
+          <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Mulai Main</span>
+          <h3 id="btn-play-level-title" class="text-base sm:text-lg font-black leading-tight mt-0.5">Level 1: Termudah 🚀</h3>
+          <p class="text-[11px] text-white/90 font-medium">Sentuh layar dan dengarkan!</p>
+        </div>
+        <span class="text-3xl animate-bounce">🎮</span>
+      </button>
+
+      <!-- Pilihan 5 Level Ceria Ramping -->
+      <div class="flex-1 flex flex-col justify-between gap-1.5 min-h-0 py-1">
+        <div class="text-xs font-black text-slate-700 flex items-center justify-between px-1">
+          <span>🗺️ Jalur Petualangan</span>
+          <span class="text-[10px] text-slate-500 font-bold">5 Tingkat Bertahap</span>
         </div>
 
-        <div id="category-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <!-- Diisi otomatis oleh JavaScript -->
-        </div>
-      </div>
-
-      <!-- Progres Belajar Hari Ini -->
-      <div class="bg-white/80 border-2 border-amber-200 rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <div class="text-4xl animate-bounce">🌟</div>
-          <div>
-            <h4 class="font-bold text-slate-800 text-base sm:text-lg">Koleksi Bintang Pintar</h4>
-            <p class="text-sm text-slate-600">
-              <span class="font-black text-rose-500" id="stat-student-name">Teman Kecil</span> sudah menjawab <span class="font-bold text-rose-500" id="stat-completed-count">0</span> soal dari 1.000 petualangan!
-            </p>
-          </div>
-        </div>
-        <div class="flex gap-1" id="star-strip">
-          <span class="text-2xl opacity-30">⭐</span>
-          <span class="text-2xl opacity-30">⭐</span>
-          <span class="text-2xl opacity-30">⭐</span>
-          <span class="text-2xl opacity-30">⭐</span>
-          <span class="text-2xl opacity-30">⭐</span>
+        <div id="level-buttons-container" class="flex-1 flex flex-col justify-between gap-1.5 min-h-0">
+          <!-- Diisi dinamis oleh JS -->
         </div>
       </div>
 
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VIEW 2: HALAMAN AKTIVITAS & SOAL           -->
-    <!-- ========================================== -->
-    <div id="view-activity" class="hidden space-y-5">
-      
-      <!-- Top Bar Soal & Indikator Nomor -->
-      <div class="flex items-center justify-between bg-white rounded-2xl p-3 border-2 border-slate-200 shadow-sm">
-        <div class="flex items-center gap-2">
-          <span id="act-cat-icon" class="text-3xl">🎨</span>
-          <div>
-            <h3 id="act-cat-title" class="font-bold text-slate-800 text-base sm:text-lg leading-tight">Warna & Bentuk</h3>
-            <span id="act-question-number" class="text-xs font-black text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full">Soal #1 dari 1.000</span>
-          </div>
+      <!-- Strip Koleksi Bintang Bawah -->
+      <div class="bg-white/90 border border-amber-200 rounded-xl px-3 py-1.5 flex items-center justify-between shadow-sm flex-shrink-0">
+        <span class="text-xs font-bold text-slate-700">Koleksi Bintang:</span>
+        <div class="flex gap-1.5" id="home-star-strip">
+          <span class="text-sm opacity-30">⭐</span>
+          <span class="text-sm opacity-30">⭐</span>
+          <span class="text-sm opacity-30">⭐</span>
+          <span class="text-sm opacity-30">⭐</span>
+          <span class="text-sm opacity-30">⭐</span>
         </div>
-
-        <div class="flex items-center gap-2">
-          <button onclick="nextQuestion(true)" class="btn-bubbly bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-3 py-1.5 rounded-xl border border-sky-300 text-xs sm:text-sm flex items-center gap-1">
-            <span>🎲</span> Ganti Soal
-          </button>
-        </div>
-      </div>
-
-      <!-- Kartu Pertanyaan Ibu Guru & Tombol Suara Ulang -->
-      <div class="bg-gradient-to-r from-amber-100 via-orange-50 to-yellow-100 border-4 border-amber-300 rounded-3xl p-5 sm:p-6 shadow-md relative overflow-hidden text-center sm:text-left">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-          
-          <div class="space-y-1.5 flex-1">
-            <div class="flex items-center justify-center sm:justify-start gap-2">
-              <span class="text-xs uppercase font-black tracking-wider text-rose-800 bg-rose-200/80 px-3 py-1 rounded-full inline-flex items-center gap-1.5">
-                <span>👩‍🏫</span> Suara Ibu Guru PAUD
-              </span>
-              <span id="voice-indicator-badge" class="text-xs font-bold text-slate-600 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full">
-                ⚡ Otomatis Dibacakan
-              </span>
-            </div>
-
-            <!-- Teks Pertanyaan (Diperuntukkan pendamping/orang tua yang menemani) -->
-            <h2 id="act-question-text" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-800 mt-1 leading-snug">
-              "Mana yang berwarna merah?"
-            </h2>
-            <p id="act-subtext" class="text-sm sm:text-base text-slate-600 font-semibold">
-              Dengarkan suara Ibu Guru, lalu sentuh gambar pilihanmu ya sayang!
-            </p>
-          </div>
-
-          <div class="flex items-center gap-2 flex-shrink-0">
-            <button id="btn-replay-voice" onclick="replayCurrentQuestionVoice()" class="btn-bubbly bg-rose-500 hover:bg-rose-400 text-white font-black px-4 sm:px-5 py-3 rounded-2xl border-2 border-rose-600 flex items-center gap-2 text-sm sm:text-base shadow-lg active:scale-95">
-              <span>🔊</span> <span>Dengarkan Lagi</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Area Pilihan Jawaban Anak (Visual Raksasa Murni, Tanpa Teks yang Harus Dibaca Murid) -->
-      <div id="play-zone" class="bg-white rounded-3xl border-4 border-slate-200 p-4 sm:p-8 min-h-[320px] flex items-center justify-center shadow-lg relative">
-        <!-- Opsi tombol gambar dimuat dinamis oleh JavaScript -->
-      </div>
-
-      <!-- Banner Feedback Jawaban -->
-      <div id="feedback-banner" class="hidden transition-all duration-300 rounded-3xl p-4 text-center font-black text-lg sm:text-xl border-4 flex items-center justify-center gap-3">
-        <span id="feedback-emoji" class="text-3xl">🎉</span>
-        <span id="feedback-msg">Hebat sekali! Jawabanmu betul!</span>
       </div>
 
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW 3: AREA ORANG TUA                     -->
-    <!-- ========================================== -->
-    <div id="view-parent" class="hidden space-y-6">
+    <!-- ==================== VIEW 2: AKTIVITAS & SOAL (FULL VIEWPORT) ==================== -->
+    <div id="view-activity" class="hidden flex-1 flex flex-col justify-between h-full min-h-0 space-y-2">
       
-      <div class="bg-white rounded-3xl border-4 border-indigo-200 p-6 shadow-md space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
+      <!-- Top Bar Soal Mini -->
+      <div class="flex items-center justify-between bg-white/90 border border-slate-200 px-3 py-1 rounded-xl shadow-xs flex-shrink-0">
+        <div class="flex items-center gap-1.5">
+          <span id="act-icon" class="text-xl">🎁</span>
           <div>
-            <h2 class="text-2xl font-black text-indigo-900 flex items-center gap-2">
-              <span>👨‍👩‍👧</span> Area Orang Tua
-            </h2>
-            <p class="text-slate-500 text-sm">Status suara Google wanita Indonesia & progres 1.000 petualangan visual anak.</p>
-          </div>
-          <button onclick="navigateTo('home')" class="btn-bubbly bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-2xl border border-slate-300 text-sm self-start sm:self-auto">
-            Kembali ke Menu
-          </button>
-        </div>
-
-        <!-- Profil Siswa -->
-        <div class="bg-pink-50 border-2 border-pink-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <span id="p-avatar-icon" class="text-4xl">👧</span>
-            <div>
-              <h4 class="font-bold text-slate-800 text-base">Nama Murid: <span id="p-student-name" class="font-black text-pink-600">Teman Kecil</span></h4>
-              <p class="text-xs text-slate-500">Ibu Guru menyapa nama ini di setiap dialog suara ramah & kalimat pujian.</p>
-            </div>
-          </div>
-          <button onclick="openNameModal(true)" class="btn-bubbly bg-white hover:bg-pink-100 text-pink-700 border-2 border-pink-300 font-bold px-4 py-2 rounded-xl text-sm">
-            Ganti Nama Murid ✏️
-          </button>
-        </div>
-
-        <!-- Statistik -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-amber-50 border-2 border-amber-200 p-4 rounded-2xl text-center">
-            <span class="text-3xl">⭐</span>
-            <div id="p-total-stars" class="text-2xl font-black text-amber-800 mt-1">0</div>
-            <div class="text-xs text-slate-500 font-semibold">Total Bintang</div>
-          </div>
-          <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl text-center">
-            <span class="text-3xl">🎯</span>
-            <div id="p-total-activities" class="text-2xl font-black text-emerald-800 mt-1">0</div>
-            <div class="text-xs text-slate-500 font-semibold">Soal Selesai</div>
-          </div>
-          <div class="bg-sky-50 border-2 border-sky-200 p-4 rounded-2xl text-center">
-            <span class="text-3xl">📚</span>
-            <div class="text-2xl font-black text-sky-800 mt-1">1.000</div>
-            <div class="text-xs text-slate-500 font-semibold">Total Bank Soal Visual</div>
-          </div>
-          <div class="bg-purple-50 border-2 border-purple-200 p-4 rounded-2xl text-center">
-            <span class="text-3xl">⏱️</span>
-            <div id="p-play-time" class="text-2xl font-black text-purple-800 mt-1">1 mnt</div>
-            <div class="text-xs text-slate-500 font-semibold">Waktu Bermain</div>
+            <span id="act-level-tag" class="text-[10px] font-black bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded-md border border-amber-300">Level 1</span>
+            <span id="act-title-tag" class="text-xs font-bold text-slate-700 ml-1">Tebak Seru</span>
           </div>
         </div>
-
-        <!-- Status Suara Google Perempuan -->
-        <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-2xl">🎙️</span>
-            <h3 class="text-lg font-bold text-emerald-900">Suara Ibu Guru (Web Speech Google Wanita)</h3>
-          </div>
-          <p class="text-sm text-emerald-800 leading-relaxed mb-3">
-            Aplikasi menggunakan mesin suara alami perangkat Anda dengan filter ketat suara wanita Bahasa Indonesia (*Google Bahasa Indonesia / Gadis / Damayanti*). Semua suara pria diblokir secara otomatis. Tidak memerlukan API Key atau kuota eksternal.
-          </p>
-          <div class="flex flex-wrap gap-2 text-xs font-black">
-            <span class="bg-white border border-emerald-300 text-emerald-700 px-3 py-1.5 rounded-xl">✅ 100% Visual Murni (Tanpa Teks)</span>
-            <span class="bg-white border border-emerald-300 text-emerald-700 px-3 py-1.5 rounded-xl">✅ Filter Wanita Aktif</span>
-            <span class="bg-white border border-emerald-300 text-emerald-700 px-3 py-1.5 rounded-xl">✅ Nada Ramah PAUD (1.25x)</span>
-            <span class="bg-white border border-emerald-300 text-emerald-700 px-3 py-1.5 rounded-xl">✅ Kunci Pindah Soal (Tuntas Bicara)</span>
-          </div>
-        </div>
-
-        <!-- Reset Catatan Belajar -->
-        <div class="flex items-center justify-between pt-4 border-t border-slate-200">
-          <div>
-            <h4 class="font-bold text-slate-800 text-sm">Reset Catatan Belajar</h4>
-            <p class="text-xs text-slate-500">Mulai kembali penghitungan bintang dari awal.</p>
-          </div>
-          <button onclick="resetProgress()" class="btn-bubbly bg-rose-100 hover:bg-rose-200 text-rose-700 border-2 border-rose-300 font-bold px-4 py-2 rounded-xl text-sm">
-            Reset Data Bintang
-          </button>
-        </div>
-
+        <button onclick="skipToAnotherQuestion()" class="btn-bubbly bg-sky-100 text-sky-700 text-[11px] font-bold px-2 py-0.5 rounded-lg border border-sky-200 flex items-center gap-1">
+          <span>🎲</span> Ganti
+        </button>
       </div>
 
+      <!-- Kartu Suara & Pertanyaan Ibu Guru -->
+      <div class="bg-gradient-to-r from-amber-100 via-orange-50 to-yellow-100 border-2 border-amber-300 rounded-2xl p-2.5 shadow-sm flex-shrink-0 flex items-center justify-between gap-2">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5 mb-0.5">
+            <span class="text-[10px] font-black uppercase text-rose-700 bg-rose-200/80 px-2 py-0.2 rounded-full inline-flex items-center gap-1">
+              <span>👩‍🏫</span> Ibu Guru
+            </span>
+            <span id="voice-indicator-badge" class="text-[10px] font-bold text-slate-600 bg-white px-2 py-0.2 rounded-full border border-slate-200 truncate">
+              Mendengarkan...
+            </span>
+          </div>
+          <h2 id="act-question-title" class="text-sm sm:text-base font-black text-slate-800 leading-snug truncate">
+            "Mana gambar yang dicari?"
+          </h2>
+        </div>
+
+        <button onclick="repeatQuestionVoice()" id="btn-repeat-voice" class="btn-bubbly bg-rose-500 text-white font-black text-xs px-2.5 py-2 rounded-xl border border-rose-600 flex-shrink-0 flex items-center gap-1">
+          <span>🔊</span> <span>Ulangi</span>
+        </button>
+      </div>
+
+      <!-- Stage Khusus: Karakter / Adegan Interaktif (Makan, Cilukba, Aksi) -->
+      <div id="act-stage-area" class="flex-shrink-0 bg-white/70 border-2 border-amber-200 rounded-2xl p-2 flex items-center justify-center gap-3 shadow-inner min-h-[70px] max-h-[90px]">
+        <!-- Diisi dinamis: misal hewan lapar membuka mulut, mobil kotor, dll -->
+      </div>
+
+      <!-- Area Pilihan Kartu Jawaban (Visual Murni Raksasa, Pas di Layar) -->
+      <div id="act-choices-container" class="flex-1 min-h-0 flex items-center justify-center w-full">
+        <!-- Kartu pilihan jawaban raksasa terpasang pas tanpa scroll -->
+      </div>
+
+      <!-- Banner Feedback Bawah (Tepat di dasar layar) -->
+      <div id="act-feedback-banner" class="hidden flex-shrink-0 rounded-xl p-2 text-center font-black text-xs sm:text-sm border-2 flex items-center justify-center gap-2 shadow-md">
+        <span id="feedback-emoji" class="text-xl">🎉</span>
+        <span id="feedback-text" class="truncate">Hebat sekali! Jawabanmu betul!</span>
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 3: AREA ORANG TUA ==================== -->
+    <div id="view-parent" class="hidden flex-1 flex flex-col justify-between h-full min-h-0 bg-white rounded-2xl border-2 border-indigo-200 p-3 shadow-md">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h2 class="text-base font-black text-indigo-900 flex items-center gap-1.5">
+          <span>👨‍👩‍👧</span> Area Orang Tua
+        </h2>
+        <button onclick="navigateTo('home')" class="btn-bubbly bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-xl border border-slate-300">
+          Tutup ✕
+        </button>
+      </div>
+
+      <div class="flex-1 flex flex-col justify-around py-2 gap-2 text-xs">
+        <div class="bg-pink-50 border border-pink-200 rounded-xl p-2 flex items-center justify-between">
+          <div>
+            <div class="text-[10px] text-slate-500 font-bold">Nama Murid:</div>
+            <div id="parent-student-name" class="font-black text-pink-700 text-sm">Teman Kecil</div>
+          </div>
+          <button onclick="openNameModal(true)" class="btn-bubbly bg-white text-pink-700 border border-pink-300 font-bold px-2 py-1 rounded-lg text-xs">
+            Ganti ✏️
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-center">
+          <div class="bg-amber-50 border border-amber-200 p-2 rounded-xl">
+            <span class="text-xl">⭐</span>
+            <div id="parent-stat-stars" class="text-lg font-black text-amber-800">0</div>
+            <div class="text-[10px] text-slate-500">Total Bintang</div>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 p-2 rounded-xl">
+            <span class="text-xl">🎯</span>
+            <div id="parent-stat-answered" class="text-lg font-black text-emerald-800">0</div>
+            <div class="text-[10px] text-slate-500">Soal Dijawab</div>
+          </div>
+        </div>
+
+        <div class="bg-sky-50 border border-sky-200 rounded-xl p-2 text-slate-700 text-[11px] leading-relaxed">
+          <strong>💡 Tips Bermain:</strong> Semua soal menggunakan visual raksasa ramah balita (Tebak Cilukba, Beri Makan Hewan, Cari Gelembung & Aksi Nyata) tanpa teks bacaan. Suara otomatis membimbing langkah demi langkah.
+        </div>
+      </div>
+
+      <div class="border-t pt-2 flex items-center justify-between">
+        <span class="text-[10px] text-slate-500">Reset bintang & level:</span>
+        <button onclick="resetDataProgress()" class="btn-bubbly bg-rose-100 text-rose-700 border border-rose-300 text-xs font-bold px-2.5 py-1 rounded-xl">
+          Reset Data
+        </button>
+      </div>
     </div>
 
   </main>
 
-  <!-- MODAL: DAFTAR NAMA SISWA (MUNCUL OTOMATIS) -->
-  <div id="welcome-name-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-gradient-to-b from-amber-50 via-white to-pink-50 rounded-3xl border-4 border-amber-300 p-6 sm:p-8 max-w-md w-full shadow-2xl text-center space-y-4">
-      
-      <div class="w-20 h-20 rounded-full bg-amber-200 mx-auto border-4 border-white shadow-md flex items-center justify-center text-5xl">
+  <!-- ================= MODAL NAMA SISWA ================= -->
+  <div id="modal-name" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-gradient-to-b from-amber-50 via-white to-pink-50 rounded-2xl border-2 border-amber-300 p-4 max-w-xs w-full shadow-2xl text-center space-y-3">
+      <div class="w-14 h-14 rounded-full bg-amber-200 mx-auto flex items-center justify-center text-3xl shadow">
         👩‍🏫
       </div>
-
       <div>
-        <span class="inline-block bg-rose-100 text-rose-700 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider mb-1">
-          Selamat Datang di Play & Learn ✨
-        </span>
-        <h3 class="text-2xl sm:text-3xl font-black text-slate-800">Halo Teman Kecil!</h3>
-        <p class="text-sm text-slate-600 font-semibold mt-1">
-          Ibu Guru ingin berkenalan denganmu. Siapa nama panggilanmu sayang?
-        </p>
+        <h3 class="text-lg font-black text-slate-800">Halo Teman Kecil!</h3>
+        <p class="text-xs text-slate-600 font-semibold">Siapa nama panggilanmu?</p>
       </div>
 
-      <!-- Pilihan Karakter Lucu -->
-      <div class="space-y-1">
-        <label class="text-xs font-bold text-slate-500">Pilih Karakter Lucumu:</label>
-        <div id="avatar-selector" class="flex justify-center gap-2">
-          <button type="button" onclick="selectStudentAvatar('👧')" class="avatar-opt text-3xl p-2 rounded-2xl border-2 border-rose-400 bg-rose-100">👧</button>
-          <button type="button" onclick="selectStudentAvatar('👦')" class="avatar-opt text-3xl p-2 rounded-2xl border-2 border-slate-200 bg-white">👦</button>
-          <button type="button" onclick="selectStudentAvatar('👶')" class="avatar-opt text-3xl p-2 rounded-2xl border-2 border-slate-200 bg-white">👶</button>
-          <button type="button" onclick="selectStudentAvatar('🐰')" class="avatar-opt text-3xl p-2 rounded-2xl border-2 border-slate-200 bg-white">🐰</button>
-          <button type="button" onclick="selectStudentAvatar('🐱')" class="avatar-opt text-3xl p-2 rounded-2xl border-2 border-slate-200 bg-white">🐱</button>
-        </div>
+      <div class="flex justify-center gap-1.5" id="avatar-choices">
+        <button type="button" onclick="selectAvatar('👧')" class="avatar-opt text-2xl p-1.5 rounded-xl border border-rose-400 bg-rose-100">👧</button>
+        <button type="button" onclick="selectAvatar('👦')" class="avatar-opt text-2xl p-1.5 rounded-xl border border-slate-200 bg-white">👦</button>
+        <button type="button" onclick="selectAvatar('🐰')" class="avatar-opt text-2xl p-1.5 rounded-xl border border-slate-200 bg-white">🐰</button>
+        <button type="button" onclick="selectAvatar('🐱')" class="avatar-opt text-2xl p-1.5 rounded-xl border border-slate-200 bg-white">🐱</button>
       </div>
 
-      <!-- Kolom Input Nama -->
-      <div class="space-y-1 text-left">
-        <label for="student-name-input" class="text-xs font-bold text-slate-600 block pl-1">Nama Panggilan Murid:</label>
-        <input type="text" id="student-name-input" maxlength="16" placeholder="Contoh: Alesha / Kenzo" class="w-full text-center text-xl font-black text-rose-600 border-4 border-amber-300 focus:border-rose-400 rounded-2xl py-3 px-4 outline-none shadow-inner bg-white">
-      </div>
+      <input type="text" id="input-student-name" maxlength="14" placeholder="Contoh: Kenzo / Alesha" class="w-full text-center text-lg font-black text-rose-600 border-2 border-amber-300 rounded-xl py-2 px-3 outline-none bg-white">
 
-      <button onclick="saveStudentNameAndStart()" class="w-full btn-bubbly bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black text-lg py-3.5 rounded-2xl border-2 border-rose-600 shadow-lg flex items-center justify-center gap-2">
-        <span>🚀</span> <span>Mulai Belajar & Bermain!</span>
+      <button onclick="saveStudentNameAndStart()" class="w-full btn-bubbly bg-rose-500 hover:bg-rose-600 text-white font-black text-sm py-2.5 rounded-xl border border-rose-600 shadow">
+        Mulai Main! 🚀
       </button>
     </div>
   </div>
 
-  <!-- MODAL: GERBANG ORANG TUA (MATH GATE) -->
-  <div id="parent-gate-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl border-4 border-indigo-400 p-6 max-w-sm w-full shadow-2xl text-center space-y-4">
-      <div class="w-16 h-16 rounded-full bg-indigo-100 mx-auto flex items-center justify-center text-3xl">
-        🔒
+  <!-- ================= MODAL GERBANG ORANG TUA ================= -->
+  <div id="modal-parent-gate" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl border-2 border-indigo-400 p-4 max-w-xs w-full shadow-2xl text-center space-y-3">
+      <div class="text-2xl">🔒</div>
+      <h3 class="text-base font-black text-slate-800">Kunci Orang Tua</h3>
+      <p class="text-xs text-slate-600">Hitung angka sederhana ini:</p>
+      <div id="parent-math-display" class="text-xl font-black text-indigo-700 bg-indigo-50 py-2 rounded-xl border border-indigo-200">
+        2 + 3 = ?
       </div>
-      <h3 class="text-xl font-black text-slate-800">Area Orang Tua</h3>
-      <p class="text-sm text-slate-600">Selesaikan hitungan sederhana ini untuk membuka pengaturan:</p>
-      
-      <div id="parent-math-question" class="text-2xl font-black text-indigo-700 bg-indigo-50 py-3 rounded-2xl border-2 border-indigo-200">
-        3 + 2 = ?
-      </div>
-
-      <input type="number" id="parent-math-answer" placeholder="Hasil angka..." class="w-full text-center text-xl font-bold border-2 border-slate-300 focus:border-indigo-500 rounded-2xl py-2 outline-none">
-      
-      <div id="parent-gate-error" class="text-xs font-bold text-rose-500 hidden">Jawaban belum tepat, silakan coba lagi.</div>
-
+      <input type="number" id="input-parent-math" placeholder="Hasil..." class="w-full text-center text-lg font-bold border border-slate-300 rounded-xl py-1.5 outline-none">
       <div class="flex gap-2">
-        <button onclick="closeParentModal()" class="flex-1 btn-bubbly bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl border border-slate-300 text-sm">
-          Batal
-        </button>
-        <button onclick="verifyParentAnswer()" class="flex-1 btn-bubbly bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl border-2 border-indigo-800 text-sm">
-          Buka
-        </button>
+        <button onclick="closeParentModal()" class="flex-1 btn-bubbly bg-slate-100 text-slate-700 text-xs font-bold py-2 rounded-xl">Batal</button>
+        <button onclick="checkParentMath()" class="flex-1 btn-bubbly bg-indigo-600 text-white text-xs font-bold py-2 rounded-xl">Buka</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: HADIAH 5 BINTANG -->
-  <div id="reward-milestone-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-gradient-to-b from-yellow-200 via-amber-100 to-rose-100 border-4 border-amber-400 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center space-y-4">
-      <div class="text-6xl animate-float">🏆</div>
-      <h2 class="text-3xl font-black text-amber-800">Wah, Hebat Sekali!</h2>
-      <p id="reward-desc" class="text-lg text-slate-700 font-bold leading-relaxed">
-        Kamu berhasil mengumpulkan 5 Bintang baru! Ibu Guru sangat bangga padamu! 🌟
-      </p>
-      <div class="flex justify-center gap-2 text-3xl">
-        ⭐ ⭐ ⭐ ⭐ ⭐
-      </div>
-      <button onclick="closeRewardModal()" class="btn-bubbly bg-rose-500 hover:bg-rose-400 text-white font-black text-lg px-8 py-3 rounded-2xl border-2 border-rose-600 w-full shadow-lg">
-        Lanjut Bermain! 🚀
+  <!-- ================= MODAL REWARD 5 BINTANG ================= -->
+  <div id="modal-reward" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-gradient-to-b from-yellow-200 to-amber-100 border-2 border-amber-400 rounded-2xl p-4 max-w-xs w-full shadow-2xl text-center space-y-3">
+      <div class="text-5xl animate-bounce">🏆</div>
+      <h3 class="text-xl font-black text-amber-900">Wah, Hebat Sekali!</h3>
+      <p id="reward-modal-msg" class="text-xs font-bold text-slate-700">Kamu mengumpulkan 5 Bintang baru!</p>
+      <div class="text-2xl">⭐ ⭐ ⭐ ⭐ ⭐</div>
+      <button onclick="closeRewardModal()" class="w-full btn-bubbly bg-rose-500 text-white font-black text-sm py-2.5 rounded-xl border border-rose-600">
+        Lanjut Petualangan! 🚀
       </button>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- JAVASCRIPT UTAMA APLIKASI                  -->
-  <!-- ========================================== -->
   <script>
     /* State Global Aplikasi */
     const STATE = {
       studentName: '',
       studentAvatar: '👧',
       stars: 0,
-      todayCompleted: 0,
-      playTimeMinutes: 1,
-      currentCategoryFilter: 'all',
-      currentIndex: 0,
-      currentQuestion: null,
-      voiceEnabled: true,
+      totalAnswered: 0,
+      currentLevel: 1,
+      highestLevel: 1,
+      soundEnabled: true,
       isSpeaking: false,
       isTransitioning: false,
-      availableQuestions: []
+      currentQuestion: null,
+      questionList: [],
+      questionIndex: 0
     };
 
-    /* Daftar 8 Kategori Utama */
-    const CATEGORIES = [
-      { id: 'all', title: '1.000 Soal Disatukan', icon: '🚀', color: 'bg-rose-100 border-rose-300 text-rose-800' },
-      { id: 'colors', title: 'Warna Ceria', icon: '🎨', color: 'bg-amber-100 border-amber-300 text-amber-800' },
-      { id: 'shapes', title: 'Bentuk Lucu', icon: '🔺', color: 'bg-sky-100 border-sky-300 text-sky-800' },
-      { id: 'animals', title: 'Hewan & Alam', icon: '🐾', color: 'bg-lime-100 border-lime-300 text-lime-800' },
-      { id: 'counting', title: 'Hitung Visual', icon: '🔢', color: 'bg-emerald-100 border-emerald-300 text-emerald-800' },
-      { id: 'vehicles', title: 'Kendaraan', icon: '🚗', color: 'bg-indigo-100 border-indigo-300 text-indigo-800' },
-      { id: 'food', title: 'Buah & Makanan', icon: '🍎', color: 'bg-pink-100 border-pink-300 text-pink-800' },
-      { id: 'habits-emotions', title: 'Rumah & Emosi', icon: '🏠', color: 'bg-teal-100 border-teal-300 text-teal-800' },
-      { id: 'nature-size', title: 'Ukuran & Alam', icon: '🌳', color: 'bg-purple-100 border-purple-300 text-purple-800' }
+    /* 5 Level Petualangan Bertahap */
+    const LEVELS = [
+      { id: 1, title: 'Langkah Awal', subtitle: 'Warna, Cilukba & Suara Lucu', icon: '🌱', color: 'from-emerald-400 to-teal-500' },
+      { id: 2, title: 'Petualang Cilik', subtitle: 'Beri Makan Hewan & Gelembung', icon: '🐥', color: 'from-sky-400 to-blue-500' },
+      { id: 3, title: 'Cari & Tebak', subtitle: 'Aksi Nyata & Detektif Bayangan', icon: '🔍', color: 'from-amber-400 to-orange-500' },
+      { id: 4, title: 'Jagoan Tangkas', subtitle: 'Hitung Jari & Sebab-Akibat', icon: '⭐', color: 'from-purple-400 to-fuchsia-500' },
+      { id: 5, title: 'Bintang Pintar', subtitle: 'Tantangan Lengkap Balita Cerdas', icon: '👑', color: 'from-rose-400 to-pink-500' }
     ];
 
     /* =========================================================================
-       GENERATOR 1.000 SOAL VISUAL MURNI (BEBAS TEKS BACAAN BAGI BALITA)
-       Semua tombol jawaban murni berupa GAMBAR / IKON RAKSASA yang jelas!
+       BANK SOAL VARIATIF & INTERAKTIF (TANPA POLA, PENUH RASA PENASARAN)
+       Model Soal:
+       - 'peekaboo' : Tebak hewan/benda bersembunyi / cilukba dengan clue suara
+       - 'feeding'  : Beri makan hewan lapar (hewan membuka mulut di panggung)
+       - 'bubble'   : Letupkan gelembung visual
+       - 'action'   : Aksi sebab-akibat (mobil kotor, gigi kotor, hujan)
+       - 'shadow'   : Mencocokkan bayangan misterius
+       - 'choice'   : Pilihan warna & bentuk murni visual
        ========================================================================= */
-    function generate1000Questions() {
-      const qList = [];
-      let currentId = 1;
-
-      // 1. TEMA WARNA CERIA (~125 Soal Visual)
-      const colorVisuals = [
-        { name: 'merah', target: '🍎', fA: '🍌', fB: '🚙', clue: 'apel yang berwarna merah' },
-        { name: 'kuning', target: '🍌', fA: '🍎', fB: '🍇', clue: 'pisang yang berwarna kuning' },
-        { name: 'biru', target: '🚙', fA: '🍎', fB: '🥕', clue: 'mobil yang berwarna biru' },
-        { name: 'hijau', target: '🍏', fA: '🍓', fB: '🍌', clue: 'apel segar yang berwarna hijau' },
-        { name: 'oranye', target: '🥕', fA: '🥦', fB: '🚙', clue: 'wortel yang berwarna oranye' },
-        { name: 'ungu', target: '🍇', fA: '🍋', fB: '🍏', clue: 'anggur manis yang berwarna ungu' },
-        { name: 'merah muda atau pink', target: '💖', fA: '⭐', fB: '🟢', clue: 'hati yang berwarna merah muda' },
-        { name: 'putih bersih', target: '🥛', fA: '🍫', fB: '🥕', clue: 'gelas susu yang berwarna putih' },
-        { name: 'cokelat lezat', target: '🍫', fA: '🥛', fB: '🍓', clue: 'cokelat manis yang berwarna cokelat' },
-        { name: 'kuning cerah', target: '🍋', fA: '🍇', fB: '🫐', clue: 'buah lemon yang berwarna kuning' }
-      ];
-
-      colorVisuals.forEach(c => {
-        for (let v = 1; v <= 13; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'colors',
-            catTitle: 'Warna Ceria',
-            catIcon: '🎨',
-            question: `Mana yang berwarna ${c.name}?`,
-            speechText: `Ayo lihat gambarnya sayang! Mana ${c.clue}?`,
-            options: [
-              { symbol: c.target, isCorrect: true, bg: 'bg-rose-50 border-rose-200' },
-              { symbol: c.fA, isCorrect: false, bg: 'bg-sky-50 border-sky-200' },
-              { symbol: c.fB, isCorrect: false, bg: 'bg-amber-50 border-amber-200' }
-            ],
-            feedbackCorrect: `Hebat sekali {name}! Itu gambar yang berwarna ${c.name}!`,
-            feedbackWrong: `Belum tepat sayang. Yuk lihat lagi mana yang berwarna ${c.name} ya!`
-          });
+    const INTERACTIVE_QUESTIONS = {
+      // LEVEL 1: TERMUDAH (Cilukba hewan, warna primer, benda berbunyi)
+      1: [
+        {
+          id: 'q_1_1',
+          type: 'peekaboo',
+          stageEmoji: '🌾❓🌾',
+          stageText: 'Siapa yang bersembunyi di rumput?',
+          title: 'Siapa yang bersembunyi di rumput?',
+          voice: 'Cilukba! Siapa yang bersembunyi di rumput dan berbunyi kwek kwek?',
+          options: [
+            { symbol: '🦆', isCorrect: true, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '🚗', isCorrect: false, bg: 'bg-slate-100 border-slate-300' },
+            { symbol: '⚽', isCorrect: false, bg: 'bg-slate-100 border-slate-300' }
+          ],
+          praise: 'Hebat sekali {name}! Itu bebek yang berbunyi kwek kwek!'
+        },
+        {
+          id: 'q_1_2',
+          type: 'choice',
+          stageEmoji: '🎨',
+          stageText: 'Sentuh warna merah',
+          title: 'Mana apel yang berwarna merah?',
+          voice: 'Ayo sentuh buah apel yang berwarna merah segar!',
+          options: [
+            { symbol: '🍎', isCorrect: true, bg: 'bg-rose-100 border-rose-300' },
+            { symbol: '🍌', isCorrect: false, bg: 'bg-yellow-100 border-yellow-300' },
+            { symbol: '🍇', isCorrect: false, bg: 'bg-purple-100 border-purple-300' }
+          ],
+          praise: 'Pintar {name}! Apelnya berwarna merah lezat!'
+        },
+        {
+          id: 'q_1_3',
+          type: 'peekaboo',
+          stageEmoji: '📦❓',
+          stageText: 'Kucing lucu mengeong di kardus!',
+          title: 'Siapa di dalam kardus?',
+          voice: 'Dengar suaranya! Meong meong! Hewan apa yang ada di dalam kardus?',
+          options: [
+            { symbol: '🐱', isCorrect: true, bg: 'bg-orange-100 border-orange-300' },
+            { symbol: '🐸', isCorrect: false, bg: 'bg-lime-100 border-lime-300' },
+            { symbol: '🐟', isCorrect: false, bg: 'bg-cyan-100 border-cyan-300' }
+          ],
+          praise: 'Wah betul sekali {name}! Itu kucing manis meong meong!'
+        },
+        {
+          id: 'q_1_4',
+          type: 'choice',
+          stageEmoji: '🟡',
+          stageText: 'Lingkaran bulat bundar',
+          title: 'Mana bentuk lingkaran bundar?',
+          voice: 'Coba sentuh bentuk lingkaran yang bulat seperti roda!',
+          options: [
+            { symbol: '🟡', isCorrect: true, bg: 'bg-yellow-100 border-yellow-300' },
+            { symbol: '🔺', isCorrect: false, bg: 'bg-red-100 border-red-300' },
+            { symbol: '🟦', isCorrect: false, bg: 'bg-blue-100 border-blue-300' }
+          ],
+          praise: 'Tepat sekali {name}! Lingkaran itu bulat bundar!'
+        },
+        {
+          id: 'q_1_5',
+          type: 'bubble',
+          stageEmoji: '🫧🫧',
+          stageText: 'Letupkan gelembung bintang!',
+          title: 'Letupkan bintang yang berkilau!',
+          voice: 'Ayo letupkan gelembung bintang yang berkelap-kelip!',
+          options: [
+            { symbol: '⭐', isCorrect: true, bg: 'bg-amber-100 border-amber-300 animate-bubble' },
+            { symbol: '🍃', isCorrect: false, bg: 'bg-emerald-100 border-emerald-300 animate-bubble' },
+            { symbol: '🪨', isCorrect: false, bg: 'bg-slate-100 border-slate-300 animate-bubble' }
+          ],
+          praise: 'Plop! Bintangnya berkilau indah, hebat {name}!'
         }
-      });
+      ],
 
-      // 2. TEMA BENTUK GEOMETRI & BENDA LUCU (~125 Soal Visual)
-      const shapeVisuals = [
-        { name: 'lingkaran bundar', target: '🟡', fA: '🟦', fB: '🔺', clue: 'lingkaran yang bulat bundar' },
-        { name: 'bintang berkilau', target: '⭐', fA: '💖', fB: '🟢', clue: 'bintang yang berkelap-kelip' },
-        { name: 'bentuk hati manis', target: '💖', fA: '⭐', fB: '🟡', clue: 'bentuk hati yang manis' },
-        { name: 'persegi kotak', target: '🟦', fA: '🟡', fB: '🔺', clue: 'kotak persegi biru' },
-        { name: 'segitiga berujung lancip', target: '🔺', fA: '🟦', fB: '⭐', clue: 'segitiga merah' },
-        { name: 'lingkaran hijau', target: '🟢', fA: '🔺', fB: '🟦', clue: 'lingkaran yang berwarna hijau' },
-        { name: 'kotak oranye', target: '🟧', fA: '🟡', fB: '💖', clue: 'kotak persegi oranye' },
-        { name: 'lingkaran merah', target: '🔴', fA: '⭐', fB: '🟦', clue: 'lingkaran merah bulat' }
-      ];
-
-      shapeVisuals.forEach(s => {
-        for (let v = 1; v <= 16; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'shapes',
-            catTitle: 'Bentuk Lucu',
-            catIcon: '🔺',
-            question: `Mana bentuk ${s.name}?`,
-            speechText: `Sentuh ${s.clue} ya sayang!`,
-            options: [
-              { symbol: s.target, isCorrect: true, bg: 'bg-amber-50 border-amber-200' },
-              { symbol: s.fA, isCorrect: false, bg: 'bg-sky-50 border-sky-200' },
-              { symbol: s.fB, isCorrect: false, bg: 'bg-emerald-50 border-emerald-200' }
-            ],
-            feedbackCorrect: `Pintar sekali {name}! Itu bentuk ${s.name}!`,
-            feedbackWrong: `Ayo cari lagi bentuk ${s.name} bersama Ibu Guru ya!`
-          });
+      // LEVEL 2: MUDAH (Beri makan hewan, gelembung ceria, warna cerah)
+      2: [
+        {
+          id: 'q_2_1',
+          type: 'feeding',
+          stageEmoji: '🐰 🥕?',
+          stageText: 'Kelinci lapar: Nyam-nyam!',
+          title: 'Beri makan kelinci yang lapar!',
+          voice: 'Kelinci sedang lapar! Makanan apa yang disukai kelinci?',
+          options: [
+            { symbol: '🥕', isCorrect: true, bg: 'bg-orange-100 border-orange-300' },
+            { symbol: '🦴', isCorrect: false, bg: 'bg-stone-100 border-stone-300' },
+            { symbol: '🧀', isCorrect: false, bg: 'bg-yellow-100 border-yellow-300' }
+          ],
+          praise: 'Nyam nyam! Kelinci senang sekali makan wortel renyah!'
+        },
+        {
+          id: 'q_2_2',
+          type: 'feeding',
+          stageEmoji: '🐵 🍌?',
+          stageText: 'Monyet melompat mencari buah!',
+          title: 'Beri buah kesukaan monyet!',
+          voice: 'Monyet suka buah apa? Ayo pilih buah untuk monyet!',
+          options: [
+            { symbol: '🍌', isCorrect: true, bg: 'bg-yellow-100 border-yellow-300' },
+            { symbol: '🌶️', isCorrect: false, bg: 'bg-red-100 border-red-300' },
+            { symbol: '🍖', isCorrect: false, bg: 'bg-amber-100 border-amber-300' }
+          ],
+          praise: 'Wah lezat sekali {name}! Monyet sangat suka buah pisang!'
+        },
+        {
+          id: 'q_2_3',
+          type: 'bubble',
+          stageEmoji: '🫧🌊🫧',
+          stageText: 'Gelembung di dalam air!',
+          title: 'Mana ikan yang berenang di air?',
+          voice: 'Cari gelembung ikan yang suka berenang di air!',
+          options: [
+            { symbol: '🐟', isCorrect: true, bg: 'bg-cyan-100 border-cyan-300 animate-bubble' },
+            { symbol: '🐦', isCorrect: false, bg: 'bg-sky-100 border-sky-300 animate-bubble' },
+            { symbol: '🐜', isCorrect: false, bg: 'bg-amber-100 border-amber-300 animate-bubble' }
+          ],
+          praise: 'Kecipak-kecipuk! Ikan berenang riang, pintar {name}!'
+        },
+        {
+          id: 'q_2_4',
+          type: 'choice',
+          stageEmoji: '🚗💨',
+          stageText: 'Mobil warna biru!',
+          title: 'Mana mobil yang berwarna biru?',
+          voice: 'Sentuh mobil keren yang berwarna biru cerah!',
+          options: [
+            { symbol: '🚙', isCorrect: true, bg: 'bg-blue-100 border-blue-300' },
+            { symbol: '🚗', isCorrect: false, bg: 'bg-red-100 border-red-300' },
+            { symbol: '🚕', isCorrect: false, bg: 'bg-yellow-100 border-yellow-300' }
+          ],
+          praise: 'Brem brem! Itu mobil biru kesukaanmu, keren {name}!'
+        },
+        {
+          id: 'q_2_5',
+          type: 'feeding',
+          stageEmoji: '🐶 🦴?',
+          stageText: 'Anjing mengibaskan ekor!',
+          title: 'Benda apa yang disukai anjing?',
+          voice: 'Lihat anjingnya senang! Benda apa yang paling disukai anjing?',
+          options: [
+            { symbol: '🦴', isCorrect: true, bg: 'bg-stone-100 border-stone-300' },
+            { symbol: '🥕', isCorrect: false, bg: 'bg-orange-100 border-orange-300' },
+            { symbol: '🍎', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Guk guk! Anjing senang sekali membawa tulang!'
         }
-      });
+      ],
 
-      // 3. TEMA HEWAN & SUARA ALAM (~130 Soal Visual)
-      const animalVisuals = [
-        { sound: '"Kwek-kwek"', target: '🦆', fA: '🦁', fB: '🐴', clue: 'bebek yang berbunyi kwek kwek' },
-        { sound: '"Meong-meong"', target: '🐱', fA: '🐰', fB: '🐘', clue: 'kucing lucu yang mengeong' },
-        { sound: '"Guk-guk"', target: '🐶', fA: '🐟', fB: '🦆', clue: 'anjing setia yang menggonggong guk guk' },
-        { sound: 'suka melompat dan makan wortel', target: '🐰', fA: '🐘', fB: '🐟', clue: 'kelinci lucu bertelinga panjang' },
-        { sound: 'berenang lincah di dalam air', target: '🐟', fA: '🐦', fB: '🐔', clue: 'ikan yang suka berenang' },
-        { sound: 'mengaum keras di hutan', target: '🦁', fA: '🦋', fB: '🐱', clue: 'singa gagah raja hutan' },
-        { sound: 'punya belalai yang sangat panjang', target: '🐘', fA: '🐜', fB: '🐱', clue: 'gajah besar yang baik hati' },
-        { sound: 'terbang tinggi dan berkicau merdu', target: '🐦', fA: '🐟', fB: '🐰', clue: 'burung yang bisa terbang' },
-        { sound: 'suka makan pisang dan bergelantungan', target: '🐵', fA: '🐴', fB: '🦆', clue: 'monyet yang lincah' },
-        { sound: 'punya sayap warna-warni yang indah', target: '🦋', fA: '🐜', fB: '🐟', clue: 'kupu-kupu yang cantik' }
-      ];
-
-      animalVisuals.forEach(an => {
-        for (let v = 1; v <= 13; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'animals',
-            catTitle: 'Hewan & Alam',
-            catIcon: '🐾',
-            question: `Mana hewan yang ${an.sound}?`,
-            speechText: `Coba cari sayang, mana ${an.clue}?`,
-            options: [
-              { symbol: an.target, isCorrect: true, bg: 'bg-lime-50 border-lime-200' },
-              { symbol: an.fA, isCorrect: false, bg: 'bg-orange-50 border-orange-200' },
-              { symbol: an.fB, isCorrect: false, bg: 'bg-sky-50 border-sky-200' }
-            ],
-            feedbackCorrect: `Luar biasa {name}! Itu dia hewannya!`,
-            feedbackWrong: `Belum pas sayang, yuk perhatikan gambarnya lagi ya!`
-          });
+      // LEVEL 3: CARI & TEBAK (Aksi sebab akibat, bayangan & detektif)
+      3: [
+        {
+          id: 'q_3_1',
+          type: 'action',
+          stageEmoji: '🌧️💦',
+          stageText: 'Hujan deras turun!',
+          title: 'Saat hujan kita memakai apa?',
+          voice: 'Hujan turun deras dari langit! Benda apa yang kita pakai agar tidak basah?',
+          options: [
+            { symbol: '☂️', isCorrect: true, bg: 'bg-indigo-100 border-indigo-300' },
+            { symbol: '🎸', isCorrect: false, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '⚽', isCorrect: false, bg: 'bg-emerald-100 border-emerald-300' }
+          ],
+          praise: 'Hebat sekali {name}! Memakai payung agar aman dari air hujan!'
+        },
+        {
+          id: 'q_3_2',
+          type: 'action',
+          stageEmoji: '🦷✨',
+          stageText: 'Gigi bersih dan wangi!',
+          title: 'Alat untuk membersihkan gigi?',
+          voice: 'Gigi harus dibersihkan setiap hari! Kita memakai apa untuk menggosok gigi?',
+          options: [
+            { symbol: '🪥', isCorrect: true, bg: 'bg-sky-100 border-sky-300' },
+            { symbol: '🥄', isCorrect: false, bg: 'bg-slate-100 border-slate-300' },
+            { symbol: '🖍️', isCorrect: false, bg: 'bg-pink-100 border-pink-300' }
+          ],
+          praise: 'Pintar {name}! Menggosok gigi dengan sikat gigi agar putih berkilau!'
+        },
+        {
+          id: 'q_3_3',
+          type: 'shadow',
+          stageEmoji: '👤❓',
+          stageText: 'Tebak bayangan siapa ini?',
+          title: 'Siapa pemilik bayangan telinga panjang?',
+          voice: 'Lihat bayangan ini punya telinga panjang dan suka melompat! Siapa dia?',
+          options: [
+            { symbol: '🐰', isCorrect: true, bg: 'bg-pink-100 border-pink-300' },
+            { symbol: '🐢', isCorrect: false, bg: 'bg-emerald-100 border-emerald-300' },
+            { symbol: '🐘', isCorrect: false, bg: 'bg-slate-100 border-slate-300' }
+          ],
+          praise: 'Luar biasa {name}! Itu kelinci lucu bertelinga panjang!'
+        },
+        {
+          id: 'q_3_4',
+          type: 'action',
+          stageEmoji: '🚘🧽',
+          stageText: 'Mobil kena lumpur!',
+          title: 'Mobil kotor dibersihkan pakai apa?',
+          voice: 'Mobil terkena lumpur kotor! Kita bersihkan dengan apa biar mengkilap?',
+          options: [
+            { symbol: '🚿', isCorrect: true, bg: 'bg-cyan-100 border-cyan-300' },
+            { symbol: '🛏️', isCorrect: false, bg: 'bg-indigo-100 border-indigo-300' },
+            { symbol: '🧸', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Semprot air bersih! Mobilnya jadi kinclong kembali, hebat {name}!'
+        },
+        {
+          id: 'q_3_5',
+          type: 'bubble',
+          stageEmoji: '🫧🌸🫧',
+          stageText: 'Gelembung bunga cantik!',
+          title: 'Cari kupu-kupu yang bersayap indah!',
+          voice: 'Lihat bunga bermekaran! Mana kupu-kupu yang hinggap di bunga?',
+          options: [
+            { symbol: '🦋', isCorrect: true, bg: 'bg-pink-100 border-pink-300 animate-bubble' },
+            { symbol: '🐜', isCorrect: false, bg: 'bg-stone-100 border-stone-300 animate-bubble' },
+            { symbol: '🪲', isCorrect: false, bg: 'bg-emerald-100 border-emerald-300 animate-bubble' }
+          ],
+          praise: 'Cantik sekali {name}! Kupu-kupu terbang dengan sayap warna-warni!'
         }
-      });
+      ],
 
-      // 4. TEMA HITUNG VISUAL (1-5 OBJEK) (~130 Soal Visual Murni)
-      // Anak melihat kelompok benda dan memilih piring/kelompok yang jumlahnya sama
-      const countVisuals = [
-        { count: 1, target: '🍎', fA: '🍎 🍎', fB: '🍎 🍎 🍎', text: '1 buah apel' },
-        { count: 2, target: '⭐ ⭐', fA: '⭐', fB: '⭐ ⭐ ⭐ ⭐', text: '2 buah bintang' },
-        { count: 3, target: '🐟 🐟 🐟', fA: '🐟', fB: '🐟 🐟', text: '3 ekor ikan' },
-        { count: 4, target: '🚗 🚗 🚗 🚗', fA: '🚗 🚗', fB: '🚗', text: '4 mobil kecil' },
-        { count: 5, target: '🦆 🦆 🦆 🦆 🦆', fA: '🦆 🦆', fB: '🦆 🦆 🦆', text: '5 ekor bebek' },
-        { count: 1, target: '🍌', fA: '🍌 🍌 🍌', fB: '🍌 🍌', text: '1 buah pisang' },
-        { count: 2, target: '🥕 🥕', fA: '🥕', fB: '🥕 🥕 🥕', text: '2 buah wortel' },
-        { count: 3, target: '🍓 🍓 🍓', fA: '🍓', fB: '🍓 🍓', text: '3 buah stroberi' },
-        { count: 4, target: '🍬 🍬 🍬 🍬', fA: '🍬 🍬', fB: '🍬', text: '4 permen manis' },
-        { count: 5, target: '🌸 🌸 🌸 🌸 🌸', fA: '🌸 🌸 🌸', fB: '🌸 🌸', text: '5 bunga mekar' }
-      ];
-
-      countVisuals.forEach(cnt => {
-        for (let v = 1; v <= 13; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'counting',
-            catTitle: 'Hitung Visual',
-            catIcon: '🔢',
-            question: `Mana kelompok yang isinya ${cnt.count}?`,
-            speechText: `Yuk hitung bersama Ibu Guru! Mana yang ada ${cnt.text} ya sayang?`,
-            displayEmblem: cnt.target,
-            options: [
-              { symbol: cnt.target, isCorrect: true, bg: 'bg-emerald-50 border-emerald-200' },
-              { symbol: cnt.fA, isCorrect: false, bg: 'bg-pink-50 border-pink-200' },
-              { symbol: cnt.fB, isCorrect: false, bg: 'bg-amber-50 border-amber-200' }
-            ],
-            feedbackCorrect: `Tepat sekali {name}! Kamu pintar sekali berhitung visual!`,
-            feedbackWrong: `Yuk kita hitung gambarnya pelan-pelan bersama Ibu Guru ya sayang!`
-          });
+      // LEVEL 4: JAGOAN TANGKAS (Hitung visual benda lucu & ukuran raksasa vs mini)
+      4: [
+        {
+          id: 'q_4_1',
+          type: 'choice',
+          stageEmoji: '⚖️🐘🐜',
+          stageText: 'Tubuh paling besar!',
+          title: 'Mana hewan yang PALING BESAR?',
+          voice: 'Coba lihat! Mana hewan yang tubuhnya paling besar dan gagah?',
+          options: [
+            { symbol: '🐘', isCorrect: true, bg: 'bg-slate-100 border-slate-300' },
+            { symbol: '🐜', isCorrect: false, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '🐭', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Betul sekali {name}! Gajah tubuhnya paling besar dan kuat!'
+        },
+        {
+          id: 'q_4_2',
+          type: 'choice',
+          stageEmoji: '✨🐜✨',
+          stageText: 'Mungil sekali!',
+          title: 'Mana hewan yang PALING KECIL?',
+          voice: 'Sekarang cari, mana hewan yang tubuhnya paling kecil dan mungil?',
+          options: [
+            { symbol: '🐜', isCorrect: true, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '🦁', isCorrect: false, bg: 'bg-orange-100 border-orange-300' },
+            { symbol: '🐴', isCorrect: false, bg: 'bg-stone-100 border-stone-300' }
+          ],
+          praise: 'Hebat {name}! Semut tubuhnya sangat kecil dan imut!'
+        },
+        {
+          id: 'q_4_3',
+          type: 'choice',
+          stageEmoji: '⭐⭐',
+          stageText: 'Hitung bintangnya: 1, 2!',
+          title: 'Mana kotak dengan dua bintang?',
+          voice: 'Ayo hitung bintangnya! Mana yang jumlahnya ada dua bintang?',
+          options: [
+            { symbol: '⭐ ⭐', isCorrect: true, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '⭐', isCorrect: false, bg: 'bg-sky-100 border-sky-300' },
+            { symbol: '⭐ ⭐ ⭐ ⭐', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Satu, dua! Betul ada dua bintang berkilau, jagoan {name}!'
+        },
+        {
+          id: 'q_4_4',
+          type: 'action',
+          stageEmoji: '☀️🕶️',
+          stageText: 'Matahari sangat terik!',
+          title: 'Saat terik matahari kita butuh apa?',
+          voice: 'Matahari siang bersinar terang! Apa yang melindungi mata kita dari silau?',
+          options: [
+            { symbol: '🕶️', isCorrect: true, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '🧤', isCorrect: false, bg: 'bg-blue-100 border-blue-300' },
+            { symbol: '🧣', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Keren sekali {name}! Memakai kacamata hitam agar tidak silau!'
+        },
+        {
+          id: 'q_4_5',
+          type: 'choice',
+          stageEmoji: '🐟🐟🐟',
+          stageText: 'Satu, dua, tiga ikan!',
+          title: 'Mana yang isinya tiga ekor ikan?',
+          voice: 'Hitung ikannya pelan-pelan! Mana yang ada tiga ekor ikan?',
+          options: [
+            { symbol: '🐟 🐟 🐟', isCorrect: true, bg: 'bg-cyan-100 border-cyan-300' },
+            { symbol: '🐟', isCorrect: false, bg: 'bg-slate-100 border-slate-300' },
+            { symbol: '🐟 🐟 🐟 🐟 🐟', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Hebat {name}! Satu, dua, tiga! Ada tiga ekor ikan berenang!'
         }
-      });
+      ],
 
-      // 5. TEMA KENDARAAN & TRANSPORTASI (~125 Soal Visual)
-      const vehicleVisuals = [
-        { desc: 'terbang tinggi di langit luas', target: '✈️', fA: '🚌', fB: '🚢', clue: 'pesawat terbang yang bisa melayang' },
-        { desc: 'berjalan panjang di atas rel kereta api', target: '🚂', fA: '🚗', fB: '🚲', clue: 'kereta api tut tut tut' },
-        { desc: 'berlayar di atas air laut luas', target: '🚢', fA: '🚚', fB: '✈️', clue: 'kapal laut yang berlayar' },
-        { desc: 'mobil polisi dengan lampu sirine biru', target: '🚓', fA: '🚑', fB: '🚜', clue: 'mobil polisi yang gagah' },
-        { desc: 'mobil pemadam kebakaran merah', target: '🚒', fA: '🚲', fB: '🚌', clue: 'mobil pemadam kebakaran berbel nyaring' },
-        { desc: 'punya baling-baling putar di atasnya', target: '🚁', fA: '🚗', fB: '🚂', clue: 'helikopter yang melayang' },
-        { desc: 'dikayuh menggunakan kaki kita', target: '🚲', fA: '🚗', fB: '✈️', clue: 'sepeda santai beroda dua' },
-        { desc: 'membawa banyak penumpang ke halte', target: '🚌', fA: '🚜', fB: '🚁', clue: 'bus besar yang ceria' }
-      ];
-
-      vehicleVisuals.forEach(vh => {
-        for (let v = 1; v <= 16; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'vehicles',
-            catTitle: 'Kendaraan',
-            catIcon: '🚗',
-            question: `Mana kendaraan yang ${vh.desc}?`,
-            speechText: `Ayo lihat sayang! Mana ${vh.clue}?`,
-            options: [
-              { symbol: vh.target, isCorrect: true, bg: 'bg-indigo-50 border-indigo-200' },
-              { symbol: vh.fA, isCorrect: false, bg: 'bg-rose-50 border-rose-200' },
-              { symbol: vh.fB, isCorrect: false, bg: 'bg-yellow-50 border-yellow-200' }
-            ],
-            feedbackCorrect: `Luar biasa {name}! Itu kendaraannya!`,
-            feedbackWrong: `Ayo perhatikan gambarnya lagi ya sayang!`
-          });
+      // LEVEL 5: BINTANG PINTAR (Tantangan lengkap, emosi, kendaraan udara & hitung 4-5)
+      5: [
+        {
+          id: 'q_5_1',
+          type: 'action',
+          stageEmoji: '✈️☁️',
+          stageText: 'Terbang tinggi di langit!',
+          title: 'Kendaraan yang bisa terbang tinggi?',
+          voice: 'Lihat awan di langit! Kendaraan apa yang bisa terbang tinggi di udara?',
+          options: [
+            { symbol: '✈️', isCorrect: true, bg: 'bg-sky-100 border-sky-300' },
+            { symbol: '🚢', isCorrect: false, bg: 'bg-blue-100 border-blue-300' },
+            { symbol: '🚂', isCorrect: false, bg: 'bg-stone-100 border-stone-300' }
+          ],
+          praise: 'Wushh! Pesawat terbang tinggi menembus awan, pintar {name}!'
+        },
+        {
+          id: 'q_5_2',
+          type: 'choice',
+          stageEmoji: '😃🎉',
+          stageText: 'Hati gembira tersenyum!',
+          title: 'Mana wajah yang sedang senang?',
+          voice: 'Coba lihat wajah-wajah ini! Mana wajah yang sedang senang dan tersenyum?',
+          options: [
+            { symbol: '😀', isCorrect: true, bg: 'bg-yellow-100 border-yellow-300' },
+            { symbol: '😢', isCorrect: false, bg: 'bg-sky-100 border-sky-300' },
+            { symbol: '😡', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Senyum manis ceria! Kamu pintar sekali {name}!'
+        },
+        {
+          id: 'q_5_3',
+          type: 'action',
+          stageEmoji: '😴🌙',
+          stageText: 'Malam hari mengantuk...',
+          title: 'Saat mengantuk di malam hari kita di mana?',
+          voice: 'Hari sudah malam dan mata mengantuk! Di mana tempat kita bobo nyenyak?',
+          options: [
+            { symbol: '🛏️', isCorrect: true, bg: 'bg-indigo-100 border-indigo-300' },
+            { symbol: '🚌', isCorrect: false, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '⚽', isCorrect: false, bg: 'bg-emerald-100 border-emerald-300' }
+          ],
+          praise: 'Bobo nyenyak di kasur yang empuk, mimpi indah {name}!'
+        },
+        {
+          id: 'q_5_4',
+          type: 'choice',
+          stageEmoji: '🦆🦆🦆🦆',
+          stageText: 'Hitung bebek kwek-kwek!',
+          title: 'Mana yang isinya empat bebek?',
+          voice: 'Ayo hitung bebeknya bersama-sama! Mana yang ada empat bebek?',
+          options: [
+            { symbol: '🦆 🦆 🦆 🦆', isCorrect: true, bg: 'bg-amber-100 border-amber-300' },
+            { symbol: '🦆 🦆', isCorrect: false, bg: 'bg-sky-100 border-sky-300' },
+            { symbol: '🦆', isCorrect: false, bg: 'bg-rose-100 border-rose-300' }
+          ],
+          praise: 'Satu, dua, tiga, empat! Ada empat bebek berbaris, jagoan {name}!'
+        },
+        {
+          id: 'q_5_5',
+          type: 'bubble',
+          stageEmoji: '🌈☀️',
+          stageText: 'Keajaiban langit!',
+          title: 'Cari pelangi yang warna-warni!',
+          voice: 'Lihat ke langit setelah hujan! Mana pelangi indah yang warna-warni?',
+          options: [
+            { symbol: '🌈', isCorrect: true, bg: 'bg-pink-100 border-pink-300 animate-bubble' },
+            { symbol: '🌧️', isCorrect: false, bg: 'bg-slate-100 border-slate-300 animate-bubble' },
+            { symbol: '⚡', isCorrect: false, bg: 'bg-amber-100 border-amber-300 animate-bubble' }
+          ],
+          praise: 'Wah pelangi yang sangat indah! Kamu juara pintar {name}!'
         }
-      });
+      ]
+    };
 
-      // 6. TEMA BUAH & MAKANAN SEHAT (~125 Soal Visual)
-      const foodVisuals = [
-        { desc: 'buah semangka segar yang berair', target: '🍉', fA: '🍌', fB: '🥕', clue: 'buah semangka yang segar' },
-        { desc: 'buah stroberi merah yang manis', target: '🍓', fA: '🍏', fB: '🍇', clue: 'buah stroberi merah manis' },
-        { desc: 'sayur wortel renyah kesukaan kelinci', target: '🥕', fA: '🍫', fB: '🍦', clue: 'wortel oranye yang sehat' },
-        { desc: 'buah pisang kuning manis', target: '🍌', fA: '🍎', fB: '🥦', clue: 'buah pisang yang manis' },
-        { desc: 'es krim dingin yang lezat', target: '🍦', fA: '🥦', fB: '🥕', clue: 'es krim dingin yang enak' },
-        { desc: 'segelas susu sehat berwarna putih', target: '🥛', fA: '🍫', fB: '🍕', clue: 'gelas susu sehat bergizi' },
-        { desc: 'donat bulat dengan taburan meises', target: '🍩', fA: '🍎', fB: '🥕', clue: 'donat bulat yang manis' },
-        { desc: 'sayur brokoli hijau menyehatkan', target: '🥦', fA: '🍭', fB: '🍟', clue: 'brokoli hijau yang kaya vitamin' }
-      ];
+    /* Mesin Suara Ramah Guru PAUD Wanita (Web Speech API) */
+    const VoiceEngine = {
+      cachedVoice: null,
 
-      foodVisuals.forEach(fd => {
-        for (let v = 1; v <= 16; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'food',
-            catTitle: 'Buah & Makanan',
-            catIcon: '🍎',
-            question: `Mana ${fd.desc}?`,
-            speechText: `Coba cari gambar ${fd.clue} ya sayang!`,
-            options: [
-              { symbol: fd.target, isCorrect: true, bg: 'bg-pink-50 border-pink-200' },
-              { symbol: fd.fA, isCorrect: false, bg: 'bg-sky-50 border-sky-200' },
-              { symbol: fd.fB, isCorrect: false, bg: 'bg-lime-50 border-lime-200' }
-            ],
-            feedbackCorrect: `Wah pintar sekali {name}! Itu makanannya!`,
-            feedbackWrong: `Yuk lihat lagi mana ${fd.clue} ya sayang!`
-          });
-        }
-      });
-
-      // 7. TEMA BENDA RUMAH, KEBIASAAN BAIK & EMOSI (~120 Soal Visual)
-      const habitVisuals = [
-        { desc: 'sabun wangi untuk mencuci tangan bersih', target: '🧼', fA: '⚽', fB: '🚗', clue: 'sabun busa untuk cuci tangan' },
-        { desc: 'sikat gigi untuk membersihkan gigi', target: '🪥', fA: '🍬', fB: '🧸', clue: 'sikat gigi agar gigi putih berkilau' },
-        { desc: 'kasur empuk tempat kita bobo nyenyak', target: '🛏️', fA: '⚽', fB: '📢', clue: 'kasur bantal yang nyaman' },
-        { desc: 'boneka mainan yang dirapikan ke kotak', target: '🧸', fA: '🧼', fB: '🪥', clue: 'boneka beruang lucu' },
-        { desc: 'wajah yang sedang SENANG dan tersenyum', target: '😀', fA: '😢', fB: '😡', clue: 'wajah gembira yang tersenyum lebar' },
-        { desc: 'wajah yang sedang SEDIH dan menangis', target: '😢', fA: '😀', fB: '😲', clue: 'wajah sedih yang meneteskan air mata' },
-        { desc: 'wajah yang MENGANTUK mau bobo', target: '😴', fA: '😀', fB: '😡', clue: 'wajah mengantuk yang terlelap' },
-        { desc: 'payung pelindung saat hujan turun', target: '☂️', fA: '⚽', fB: '🪥', clue: 'payung pelindung tetesan hujan' }
-      ];
-
-      habitVisuals.forEach(hb => {
-        for (let v = 1; v <= 15; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'habits-emotions',
-            catTitle: 'Rumah & Emosi',
-            catIcon: '🏠',
-            question: `Mana ${hb.desc}?`,
-            speechText: `Sentuh gambar ${hb.clue} ya sayang!`,
-            options: [
-              { symbol: hb.target, isCorrect: true, bg: 'bg-teal-50 border-teal-200' },
-              { symbol: hb.fA, isCorrect: false, bg: 'bg-amber-50 border-amber-200' },
-              { symbol: hb.fB, isCorrect: false, bg: 'bg-purple-50 border-purple-200' }
-            ],
-            feedbackCorrect: `Anak pintar {name}! Jawabanmu tepat sekali!`,
-            feedbackWrong: `Ayo perhatikan gambarnya lagi bersama Ibu Guru ya!`
-          });
-        }
-      });
-
-      // 8. TEMA ALAM, CUACA & LOGIKA UKURAN VISUAL (~120 Soal Visual)
-      const natureVisuals = [
-        { desc: 'matahari cerah yang bersinar hangat di siang hari', target: '☀️', fA: '🌧️', fB: '🌙', clue: 'matahari pagi yang bersinar terang' },
-        { desc: 'awan mendung yang menurunkan air hujan', target: '🌧️', fA: '☀️', fB: '🌈', clue: 'awan hujan berair dingin' },
-        { desc: 'pelangi indah yang penuh warna-warni', target: '🌈', fA: '🌧️', fB: '🌙', clue: 'pelangi melengkung yang cantik' },
-        { desc: 'bulan sabit bersinar di malam hari yang tenang', target: '🌙', fA: '☀️', fB: '🌧️', clue: 'bulan di waktu malam' },
-        { desc: 'hewan yang tubuhnya PALING BESAR', target: '🐘', fA: '🐜', fB: '🐱', clue: 'gajah raksasa yang bertubuh besar' },
-        { desc: 'hewan yang tubuhnya PALING KECIL', target: '🐜', fA: '🐘', fB: '🐴', clue: 'semut kecil imut' },
-        { desc: 'pohon rindang berdaun lebat yang tinggi', target: '🌳', fA: '🌱', fB: '🍄', clue: 'pohon besar yang hijau' },
-        { desc: 'tunas tanaman kecil yang baru tumbuh', target: '🌱', fA: '🌳', fB: '🌲', clue: 'tunas tanaman kecil yang mungil' }
-      ];
-
-      natureVisuals.forEach(nt => {
-        for (let v = 1; v <= 15; v++) {
-          qList.push({
-            id: currentId++,
-            category: 'nature-size',
-            catTitle: 'Ukuran & Alam',
-            catIcon: '🌳',
-            question: `Mana ${nt.desc}?`,
-            speechText: `Coba cari gambar ${nt.clue} ya sayang!`,
-            options: [
-              { symbol: nt.target, isCorrect: true, bg: 'bg-purple-50 border-purple-200' },
-              { symbol: nt.fA, isCorrect: false, bg: 'bg-sky-50 border-sky-200' },
-              { symbol: nt.fB, isCorrect: false, bg: 'bg-orange-50 border-orange-200' }
-            ],
-            feedbackCorrect: `Hebat sekali {name}! Matamu sangat jeli dan pintar!`,
-            feedbackWrong: `Yuk kita lihat baik-baik lagi ya sayang!`
-          });
-        }
-      });
-
-      return qList; // Menghasilkan total 1.000 soal visual murni!
-    }
-
-    const MASTER_QUESTIONS = generate1000Questions();
-
-    /* =========================================================================
-       AUDIO & SPEECH SYNTHESIS ENGINE (GOOGLE FEMALE WEB SPEECH)
-       ========================================================================= */
-    const SpeechEngine = {
-      selectedVoice: null,
-
-      initVoices() {
+      init() {
         if (!('speechSynthesis' in window)) return;
         const load = () => {
-          const voices = window.speechSynthesis.getVoices();
-          // Filter ketat suara wanita Indonesia:
-          const idVoices = voices.filter(v => v.lang && (v.lang.startsWith('id') || v.lang.includes('ID') || v.lang.includes('ind')));
-          const femaleKeywords = ['gadis', 'female', 'wanita', 'perempuan', 'damayanti', 'google'];
-          const maleKeywords = ['andika', 'male', 'pria', 'david'];
+          const list = window.speechSynthesis.getVoices();
+          const idVoices = list.filter(v => v.lang && (v.lang.startsWith('id') || v.lang.includes('ID') || v.lang.includes('ind')));
+          const femaleKeys = ['gadis', 'female', 'wanita', 'perempuan', 'damayanti', 'google'];
+          const maleKeys = ['andika', 'male', 'pria', 'david'];
 
-          let femaleVoice = idVoices.find(v => {
-            const name = v.name.toLowerCase();
-            return femaleKeywords.some(k => name.includes(k)) && !maleKeywords.some(k => name.includes(k));
+          let vFemale = idVoices.find(v => {
+            const n = v.name.toLowerCase();
+            return femaleKeys.some(k => n.includes(k)) && !maleKeys.some(k => n.includes(k));
           });
 
-          if (!femaleVoice) {
-            // Fallback ke suara Indonesia non-pria
-            femaleVoice = idVoices.find(v => !maleKeywords.some(k => v.name.toLowerCase().includes(k)));
+          if (!vFemale) {
+            vFemale = idVoices.find(v => !maleKeys.some(k => v.name.toLowerCase().includes(k)));
           }
 
-          if (!femaleVoice && idVoices.length > 0) {
-            femaleVoice = idVoices[0];
-          }
-
-          this.selectedVoice = femaleVoice || null;
+          this.cachedVoice = vFemale || idVoices[0] || null;
         };
 
         load();
@@ -809,64 +778,56 @@
         }
       },
 
-      /* Membacakan Kalimat dengan Suara Ibu Guru yang Ramah & Menunggu Tuntas */
-      speak(text, onComplete = null) {
-        if (!STATE.voiceEnabled || !('speechSynthesis' in window)) {
-          if (onComplete) onComplete();
+      speak(text, onEnded = null) {
+        if (!STATE.soundEnabled || !('speechSynthesis' in window)) {
+          if (onEnded) onEnded();
           return;
         }
 
         try {
-          window.speechSynthesis.cancel(); // Hentikan ucapan yang tertunda
+          window.speechSynthesis.cancel();
 
-          const personalizedText = text.replace(/\{name\}/g, STATE.studentName || 'sayang');
-          const utterance = new SpeechSynthesisUtterance(personalizedText);
-          utterance.lang = 'id-ID';
+          const name = STATE.studentName || 'teman kecil';
+          const cleanText = text.replace(/\{name\}/g, name);
 
-          if (this.selectedVoice) {
-            utterance.voice = this.selectedVoice;
-          }
+          const utter = new SpeechSynthesisUtterance(cleanText);
+          utter.lang = 'id-ID';
+          if (this.cachedVoice) utter.voice = this.cachedVoice;
+          utter.pitch = 1.25;
+          utter.rate = 0.86;
 
-          // Parameter Ibu Guru PAUD: Lembut, bernada manis ceria, artikulasi jelas
-          utterance.pitch = 1.25; // Nada ramah ceria
-          utterance.rate = 0.86;  // Artikulasi santai untuk anak 3 tahun
+          setSpeakingUI(true);
 
-          setVoiceSpeakingUI(true);
-
-          let hasEnded = false;
-          const finish = () => {
-            if (hasEnded) return;
-            hasEnded = true;
-            setVoiceSpeakingUI(false);
-            if (onComplete) onComplete();
+          let ended = false;
+          const done = () => {
+            if (ended) return;
+            ended = true;
+            setSpeakingUI(false);
+            if (onEnded) onEnded();
           };
 
-          utterance.onend = finish;
-          utterance.onerror = finish;
+          utter.onend = done;
+          utter.onerror = done;
 
-          // Timer keselamatan agar alur tetap jalan jika browser menahan event onend
-          const approxDuration = Math.max(1600, personalizedText.length * 110);
-          setTimeout(() => {
-            if (!hasEnded) finish();
-          }, approxDuration + 800);
+          // Cadangan jika onend diblokir browser
+          const maxTime = Math.max(1600, cleanText.length * 115) + 600;
+          setTimeout(() => { if (!ended) done(); }, maxTime);
 
-          window.speechSynthesis.speak(utterance);
+          window.speechSynthesis.speak(utter);
         } catch (e) {
-          setVoiceSpeakingUI(false);
-          if (onComplete) onComplete();
+          setSpeakingUI(false);
+          if (onEnded) onEnded();
         }
       },
 
       stop() {
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-        }
-        setVoiceSpeakingUI(false);
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        setSpeakingUI(false);
       }
     };
 
-    /* Web Audio API Sound Effects (Denting Halus) */
-    const AudioFX = {
+    /* Audio Synthesizer Pop & Chime Ceria */
+    const SoundFX = {
       ctx: null,
       init() {
         if (!this.ctx) {
@@ -877,24 +838,24 @@
           this.ctx.resume().catch(() => {});
         }
       },
-      playPop() {
+      pop() {
         try {
           this.init();
           if (!this.ctx) return;
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(440, this.ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(750, this.ctx.currentTime + 0.08);
+          osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.07);
           gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.07);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start();
-          osc.stop(this.ctx.currentTime + 0.08);
+          osc.stop(this.ctx.currentTime + 0.07);
         } catch (e) {}
       },
-      playSuccessChime() {
+      win() {
         try {
           this.init();
           if (!this.ctx) return;
@@ -904,482 +865,447 @@
             const gain = this.ctx.createGain();
             osc.type = 'triangle';
             osc.frequency.value = freq;
-            const start = now + idx * 0.08;
+            const start = now + idx * 0.07;
             gain.gain.setValueAtTime(0.2, start);
-            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.28);
             osc.connect(gain);
             gain.connect(this.ctx.destination);
             osc.start(start);
-            osc.stop(start + 0.32);
+            osc.stop(start + 0.3);
           });
         } catch (e) {}
       }
     };
 
-    /* Indikator Bicara Ibu Guru */
-    function setVoiceSpeakingUI(isSpeaking) {
-      STATE.isSpeaking = isSpeaking;
-      const waves = document.getElementById('voice-waves');
-      const avatar = document.getElementById('avatar-guru');
+    function setSpeakingUI(speaking) {
+      STATE.isSpeaking = speaking;
       const badge = document.getElementById('voice-indicator-badge');
-
-      if (waves) {
-        if (isSpeaking) waves.classList.remove('hidden');
-        else waves.classList.add('hidden');
-      }
-      if (avatar) {
-        if (isSpeaking) avatar.classList.add('scale-105', 'ring-4', 'ring-rose-400');
-        else avatar.classList.remove('scale-105', 'ring-4', 'ring-rose-400');
-      }
       if (badge) {
-        if (isSpeaking) {
-          badge.innerText = '🗣️ Ibu Guru Sedang Bicara...';
-          badge.className = 'text-xs font-black text-rose-700 bg-rose-100 border border-rose-300 px-2.5 py-0.5 rounded-full animate-pulse';
+        if (speaking) {
+          badge.innerText = '🗣️ Ibu Guru Bicara...';
+          badge.className = 'text-[10px] font-black text-rose-700 bg-rose-100 px-2 py-0.2 rounded-full border border-rose-300 animate-pulse';
         } else {
-          badge.innerText = '✨ Siap Sentuh Pilihan';
-          badge.className = 'text-xs font-bold text-slate-600 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full';
+          badge.innerText = '✨ Sentuh Pilihan!';
+          badge.className = 'text-[10px] font-bold text-slate-600 bg-white px-2 py-0.2 rounded-full border border-slate-200';
         }
       }
     }
 
-    /* =========================================================================
-       LOCAL STORAGE & STATE SISWA
-       ========================================================================= */
     function loadSavedState() {
       try {
-        const sName = localStorage.getItem('pnl_student_name');
-        if (sName) STATE.studentName = sName;
-
-        const sAvatar = localStorage.getItem('pnl_student_avatar');
-        if (sAvatar) STATE.studentAvatar = sAvatar;
-
-        const sStars = localStorage.getItem('pnl_stars');
-        if (sStars !== null) STATE.stars = parseInt(sStars, 10) || 0;
-
-        const sComp = localStorage.getItem('pnl_completed');
-        if (sComp !== null) STATE.todayCompleted = parseInt(sComp, 10) || 0;
+        const n = localStorage.getItem('pnl_std_name');
+        if (n) STATE.studentName = n;
+        const av = localStorage.getItem('pnl_std_avatar');
+        if (av) STATE.studentAvatar = av;
+        const st = localStorage.getItem('pnl_std_stars');
+        if (st) STATE.stars = parseInt(st, 10) || 0;
+        const ans = localStorage.getItem('pnl_std_answered');
+        if (ans) STATE.totalAnswered = parseInt(ans, 10) || 0;
+        const cl = localStorage.getItem('pnl_std_lvl');
+        if (cl) STATE.currentLevel = parseInt(cl, 10) || 1;
+        const hl = localStorage.getItem('pnl_std_high');
+        if (hl) STATE.highestLevel = parseInt(hl, 10) || 1;
       } catch (e) {}
 
-      updateStudentHeaderUI();
-      updateGlobalUI();
+      updateUIElements();
     }
 
     function saveState() {
       try {
-        if (STATE.studentName) localStorage.setItem('pnl_student_name', STATE.studentName);
-        if (STATE.studentAvatar) localStorage.setItem('pnl_student_avatar', STATE.studentAvatar);
-        localStorage.setItem('pnl_stars', STATE.stars.toString());
-        localStorage.setItem('pnl_completed', STATE.todayCompleted.toString());
+        if (STATE.studentName) localStorage.setItem('pnl_std_name', STATE.studentName);
+        if (STATE.studentAvatar) localStorage.setItem('pnl_std_avatar', STATE.studentAvatar);
+        localStorage.setItem('pnl_std_stars', STATE.stars.toString());
+        localStorage.setItem('pnl_std_answered', STATE.totalAnswered.toString());
+        localStorage.setItem('pnl_std_lvl', STATE.currentLevel.toString());
+        localStorage.setItem('pnl_std_high', STATE.highestLevel.toString());
       } catch (e) {}
     }
 
-    function openNameModal(isUserAction = true) {
-      if (isUserAction) AudioFX.playPop();
-      const modal = document.getElementById('welcome-name-modal');
-      const input = document.getElementById('student-name-input');
-      input.value = STATE.studentName || '';
-      selectStudentAvatar(STATE.studentAvatar || '👧');
-      modal.classList.remove('hidden');
-      setTimeout(() => input.focus(), 250);
-    }
-
-    function closeNameModal() {
-      document.getElementById('welcome-name-modal').classList.add('hidden');
-    }
-
-    function selectStudentAvatar(emoji) {
-      STATE.studentAvatar = emoji;
-      document.querySelectorAll('.avatar-opt').forEach(btn => {
-        if (btn.innerText.trim() === emoji) {
-          btn.className = 'avatar-opt text-3xl p-2 rounded-2xl border-2 border-rose-400 bg-rose-100 ring-2 ring-rose-300';
-        } else {
-          btn.className = 'avatar-opt text-3xl p-2 rounded-2xl border-2 border-slate-200 bg-white';
-        }
-      });
-    }
-
-    function saveStudentNameAndStart() {
-      AudioFX.playPop();
-      const input = document.getElementById('student-name-input');
-      let val = input.value.trim();
-      if (!val) val = 'Teman Kecil';
-
-      STATE.studentName = val;
-      saveState();
-      updateStudentHeaderUI();
-      closeNameModal();
-
-      AudioFX.playSuccessChime();
-      playTeacherIntroGreeting();
-    }
-
-    function updateStudentHeaderUI() {
+    function updateUIElements() {
       const name = STATE.studentName || 'Teman Kecil';
-      const avatar = STATE.studentAvatar || '👧';
+      const av = STATE.studentAvatar || '👧';
 
-      const sName = document.getElementById('student-name-display');
-      const sAvatar = document.getElementById('student-avatar-display');
-      const statName = document.getElementById('stat-student-name');
-      const pName = document.getElementById('p-student-name');
-      const pAvatar = document.getElementById('p-avatar-icon');
-      const homeHeading = document.getElementById('home-greeting-heading');
-      const homeSub = document.getElementById('home-greeting-sub');
+      document.getElementById('header-student-name').innerText = name;
+      document.getElementById('header-avatar').innerText = av;
+      document.getElementById('header-star-count').innerText = STATE.stars;
+      document.getElementById('home-greeting-text').innerText = `Halo ${name}!`;
+      document.getElementById('btn-play-level-title').innerText = `Level ${STATE.currentLevel}: ${LEVELS[STATE.currentLevel - 1]?.title || 'Main'} 🚀`;
 
-      if (sName) sName.innerText = name;
-      if (sAvatar) sAvatar.innerText = avatar;
-      if (statName) statName.innerText = name;
-      if (pName) pName.innerText = name;
-      if (pAvatar) pAvatar.innerText = avatar;
+      // Update strip bintang home
+      const strip = document.getElementById('home-star-strip');
+      if (strip) {
+        const starEls = strip.querySelectorAll('span');
+        const active = STATE.stars % 5;
+        starEls.forEach((el, idx) => {
+          if (idx < (active === 0 && STATE.stars > 0 ? 5 : active)) {
+            el.className = 'text-sm opacity-100 animate-wiggle';
+          } else {
+            el.className = 'text-sm opacity-30';
+          }
+        });
+      }
 
-      if (homeHeading) homeHeading.innerText = `Halo ${name} Sayang!`;
-      if (homeSub) homeSub.innerText = `Ibu Guru siap menemani ${name} bermain 1.000 petualangan visual hari ini! Sentuh tombol di bawah ya!`;
+      // Update parent data
+      document.getElementById('parent-student-name').innerText = name;
+      document.getElementById('parent-stat-stars').innerText = STATE.stars;
+      document.getElementById('parent-stat-answered').innerText = STATE.totalAnswered;
     }
 
-    /* =========================================================================
-       NAVIGASI TAMPILAN
-       ========================================================================= */
     function navigateTo(viewId) {
-      AudioFX.playPop();
-      SpeechEngine.stop();
+      SoundFX.pop();
+      VoiceEngine.stop();
 
-      const homeView = document.getElementById('view-home');
-      const actView = document.getElementById('view-activity');
-      const parentView = document.getElementById('view-parent');
-      const btnBack = document.getElementById('btn-header-back');
+      const home = document.getElementById('view-home');
+      const act = document.getElementById('view-activity');
+      const parent = document.getElementById('view-parent');
+      const backBtn = document.getElementById('btn-back-home');
 
-      homeView.classList.add('hidden');
-      actView.classList.add('hidden');
-      parentView.classList.add('hidden');
-      btnBack.classList.remove('hidden');
+      home.classList.add('hidden');
+      act.classList.add('hidden');
+      parent.classList.add('hidden');
+      backBtn.classList.remove('hidden');
 
       if (viewId === 'home') {
-        homeView.classList.remove('hidden');
-        btnBack.classList.add('hidden');
+        home.classList.remove('hidden');
+        backBtn.classList.add('hidden');
+        renderLevelButtons();
       } else if (viewId === 'activity') {
-        actView.classList.remove('hidden');
+        act.classList.remove('hidden');
       } else if (viewId === 'parent') {
-        parentView.classList.remove('hidden');
-        updateParentDashboard();
+        parent.classList.remove('hidden');
       }
     }
 
-    function renderCategoryGrid() {
-      const container = document.getElementById('category-grid');
-      container.innerHTML = '';
+    /* Render Tombol Level Ramping di Home */
+    function renderLevelButtons() {
+      const cont = document.getElementById('level-buttons-container');
+      cont.innerHTML = '';
 
-      CATEGORIES.filter(c => c.id !== 'all').forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = `btn-bubbly ${cat.color} border-4 rounded-3xl p-4 flex flex-col items-center justify-center text-center gap-1.5 shadow-sm active:scale-95`;
-        btn.onclick = () => startCategoryAdventure(cat.id);
+      LEVELS.forEach(lvl => {
+        const isCurrent = (lvl.id === STATE.currentLevel);
+        const isUnlocked = (lvl.id <= STATE.highestLevel);
 
-        btn.innerHTML = `
-          <span class="text-4xl sm:text-5xl animate-float">${cat.icon}</span>
-          <span class="font-black text-sm sm:text-base text-slate-800 leading-tight mt-1">${cat.title}</span>
+        const row = document.createElement('div');
+        row.className = `w-full rounded-xl px-2.5 py-1.5 flex items-center justify-between border-2 transition-all ${
+          isCurrent ? 'bg-amber-100/90 border-amber-400 shadow-sm ring-2 ring-amber-300' : 'bg-white/80 border-slate-200'
+        }`;
+
+        row.innerHTML = `
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-xl flex-shrink-0">${lvl.icon}</span>
+            <div class="truncate">
+              <div class="flex items-center gap-1">
+                <span class="text-[10px] font-black uppercase text-slate-500">Lv.${lvl.id}</span>
+                <span class="text-xs font-black text-slate-800 truncate">${lvl.title}</span>
+              </div>
+              <p class="text-[10px] text-slate-500 truncate font-semibold">${lvl.subtitle}</p>
+            </div>
+          </div>
+          <button onclick="startLevel(${lvl.id})" class="btn-bubbly ${isCurrent ? 'bg-amber-400 text-slate-900' : 'bg-slate-100 text-slate-700'} text-xs font-black px-2.5 py-1 rounded-xl border border-slate-300 flex-shrink-0">
+            Main
+          </button>
         `;
-        container.appendChild(btn);
+
+        cont.appendChild(row);
       });
     }
 
-    /* =========================================================================
-       PETUALANGAN 1.000 SOAL VISUAL
-       ========================================================================= */
-    function startUnifiedAdventure() {
-      STATE.currentCategoryFilter = 'all';
-      // Acak seluruh 1.000 soal visual
-      STATE.availableQuestions = [...MASTER_QUESTIONS].sort(() => Math.random() - 0.5);
-      STATE.currentIndex = 0;
-
-      navigateTo('activity');
-      loadCurrentQuestion();
+    function startCurrentLevelAdventure() {
+      startLevel(STATE.currentLevel || 1);
     }
 
-    function startCategoryAdventure(catId) {
-      STATE.currentCategoryFilter = catId;
-      STATE.availableQuestions = MASTER_QUESTIONS.filter(q => q.category === catId).sort(() => Math.random() - 0.5);
-      STATE.currentIndex = 0;
+    function startLevel(lvlNumber) {
+      STATE.currentLevel = lvlNumber;
+      if (lvlNumber > STATE.highestLevel) STATE.highestLevel = lvlNumber;
+      saveState();
+
+      const pool = INTERACTIVE_QUESTIONS[lvlNumber] || INTERACTIVE_QUESTIONS[1];
+      STATE.questionList = [...pool].sort(() => Math.random() - 0.5);
+      STATE.questionIndex = 0;
 
       navigateTo('activity');
-      loadCurrentQuestion();
+      loadQuestion();
     }
 
-    /* Memuat dan Menampilkan Soal Aktif (Visual Murni) */
-    function loadCurrentQuestion() {
+    function loadQuestion() {
       STATE.isTransitioning = false;
-      document.getElementById('feedback-banner').classList.add('hidden');
+      document.getElementById('act-feedback-banner').classList.add('hidden');
 
-      if (STATE.currentIndex >= STATE.availableQuestions.length) {
-        STATE.currentIndex = 0;
-        STATE.availableQuestions.sort(() => Math.random() - 0.5);
+      if (STATE.questionIndex >= STATE.questionList.length) {
+        if (STATE.currentLevel < 5) {
+          STATE.currentLevel++;
+          if (STATE.currentLevel > STATE.highestLevel) STATE.highestLevel = STATE.currentLevel;
+          saveState();
+          STATE.questionList = [...(INTERACTIVE_QUESTIONS[STATE.currentLevel] || INTERACTIVE_QUESTIONS[1])].sort(() => Math.random() - 0.5);
+          STATE.questionIndex = 0;
+        } else {
+          STATE.questionIndex = 0;
+          STATE.questionList.sort(() => Math.random() - 0.5);
+        }
       }
 
-      const q = STATE.availableQuestions[STATE.currentIndex];
+      const q = STATE.questionList[STATE.questionIndex];
       STATE.currentQuestion = q;
 
-      // Update Bar Informasi
-      document.getElementById('act-cat-icon').innerText = q.catIcon;
-      document.getElementById('act-cat-title').innerText = q.catTitle;
-      document.getElementById('act-question-number').innerText = `Soal #${STATE.currentIndex + 1} dari ${STATE.availableQuestions.length}`;
+      // Update Tag & Header Soal
+      document.getElementById('act-level-tag').innerText = `Level ${STATE.currentLevel}`;
+      document.getElementById('act-title-tag').innerText = `Soal #${STATE.questionIndex + 1}`;
+      document.getElementById('act-question-title').innerText = `"${q.title}"`;
 
-      // Update Teks Pertanyaan
-      const personalizedQuestion = q.question.replace(/\{name\}/g, STATE.studentName || 'sayang');
-      document.getElementById('act-question-text').innerText = `"${personalizedQuestion}"`;
-      document.getElementById('act-subtext').innerText = `Dengarkan Ibu Guru, lalu sentuh gambar pilihanmu ya ${STATE.studentName || 'sayang'}!`;
-
-      // Render Pilihan Jawaban (VISUAL RAKSASA MURNI - TANPA TEKS YANG PERLU DIBACA ANAK)
-      const playZone = document.getElementById('play-zone');
-      playZone.innerHTML = '';
-      playZone.style.pointerEvents = 'auto';
-
-      const wrapper = document.createElement('div');
-      wrapper.className = 'flex flex-col items-center gap-6 w-full max-w-2xl';
-
-      // Jika ada emblem hitungan visual (misal baris apel)
-      if (q.displayEmblem) {
-        const emblemBox = document.createElement('div');
-        emblemBox.className = 'bg-amber-50 border-4 border-amber-200 rounded-3xl p-5 flex flex-wrap items-center justify-center gap-3 shadow-inner text-4xl sm:text-5xl';
-        emblemBox.innerText = q.displayEmblem;
-        wrapper.appendChild(emblemBox);
-      }
-
-      const grid = document.createElement('div');
-      grid.className = 'flex flex-wrap items-center justify-center gap-5 sm:gap-7 w-full';
-
-      // Acak urutan pilihan jawaban
-      const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
-
-      shuffledOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        // Ukuran ekstra besar (>140px) khusus balita usia 3 tahun dengan gambar super jelas
-        btn.className = `card-choice ${opt.bg || 'bg-slate-50 border-slate-200'} border-4 rounded-3xl p-6 sm:p-8 flex items-center justify-center min-w-[140px] sm:min-w-[180px] min-h-[150px] sm:min-h-[180px] cursor-pointer hover:border-amber-400 active:scale-95`;
-        
-        btn.innerHTML = `
-          <span class="text-6xl sm:text-7xl pointer-events-none select-none filter drop-shadow-sm">${opt.symbol}</span>
+      // Update Stage Khusus (Cilukba, Feeding, Aksi, Gelembung)
+      const stage = document.getElementById('act-stage-area');
+      let stageHtml = '';
+      if (q.type === 'peekaboo') {
+        stageHtml = `
+          <div class="flex items-center gap-2">
+            <span class="text-3xl animate-bounce">👀</span>
+            <span class="text-xs font-black text-amber-900 bg-amber-100 px-2 py-1 rounded-xl border border-amber-300">${q.stageText}</span>
+          </div>
         `;
+      } else if (q.type === 'feeding') {
+        stageHtml = `
+          <div class="flex items-center gap-2">
+            <span class="text-3xl animate-float">${q.stageEmoji}</span>
+            <span class="text-xs font-black text-rose-800 bg-rose-100 px-2 py-1 rounded-xl border border-rose-200">${q.stageText}</span>
+          </div>
+        `;
+      } else if (q.type === 'bubble') {
+        stageHtml = `
+          <div class="flex items-center gap-2">
+            <span class="text-3xl animate-bubble">🫧</span>
+            <span class="text-xs font-black text-sky-800 bg-sky-100 px-2 py-1 rounded-xl border border-sky-200">${q.stageText}</span>
+          </div>
+        `;
+      } else {
+        stageHtml = `
+          <div class="flex items-center gap-2">
+            <span class="text-3xl">${q.stageEmoji}</span>
+            <span class="text-xs font-black text-slate-800">${q.stageText}</span>
+          </div>
+        `;
+      }
+      stage.innerHTML = stageHtml;
 
-        btn.onclick = () => handleAnswer(opt.isCorrect, q);
-        grid.appendChild(btn);
+      // Render Pilihan Kartu Jawaban Raksasa yang Pas di Layar HP
+      const container = document.getElementById('act-choices-container');
+      container.innerHTML = '';
+      container.style.pointerEvents = 'auto';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'w-full flex items-center justify-around gap-2 sm:gap-3 py-1';
+
+      const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+
+      shuffled.forEach(opt => {
+        const btn = document.createElement('button');
+        // Ukuran tombol dioptimalkan agar tidak pernah memicu scroll pada layar vertikal HP
+        btn.className = `card-choice ${opt.bg} border-2 rounded-2xl flex items-center justify-center flex-1 h-28 sm:h-36 max-w-[125px] sm:max-w-[150px] shadow active:scale-95`;
+        
+        btn.innerHTML = `<span class="text-4xl sm:text-5xl pointer-events-none drop-shadow-sm select-none">${opt.symbol}</span>`;
+        btn.onclick = () => selectChoice(opt.isCorrect, q);
+
+        wrap.appendChild(btn);
       });
 
-      wrapper.appendChild(grid);
-      playZone.appendChild(wrapper);
+      container.appendChild(wrap);
 
-      // Otomatis bacakan instruksi soal oleh Ibu Guru
-      replayCurrentQuestionVoice();
+      // Otomatis bacakan instruksi
+      repeatQuestionVoice();
     }
 
-    function replayCurrentQuestionVoice() {
+    function repeatQuestionVoice() {
       if (!STATE.currentQuestion) return;
-      const textToSpeak = STATE.currentQuestion.speechText || STATE.currentQuestion.question;
-      SpeechEngine.speak(textToSpeak);
+      VoiceEngine.speak(STATE.currentQuestion.voice);
     }
 
-    function nextQuestion(isManual = false) {
-      if (isManual) AudioFX.playPop();
-      STATE.currentIndex++;
-      loadCurrentQuestion();
+    function skipToAnotherQuestion() {
+      SoundFX.pop();
+      STATE.questionIndex++;
+      loadQuestion();
     }
 
-    /* =========================================================================
-       PENANGANAN JAWABAN & SINKRONISASI SUARA IBU GURU
-       (SOAL TIDAK BERPINDAH SEBELUM SUARA SELESAI)
-       ========================================================================= */
-    function handleAnswer(isCorrect, questionObj) {
+    function selectChoice(isCorrect, question) {
       if (STATE.isTransitioning) return;
       STATE.isTransitioning = true;
 
-      // Kunci layar agar anak menyimak penjelasan Ibu Guru sampai tuntas
-      const playZone = document.getElementById('play-zone');
-      playZone.style.pointerEvents = 'none';
+      // Kunci layar agar anak tidak spam sentuh
+      const container = document.getElementById('act-choices-container');
+      container.style.pointerEvents = 'none';
 
-      const banner = document.getElementById('feedback-banner');
-      const msg = document.getElementById('feedback-msg');
+      const banner = document.getElementById('act-feedback-banner');
       const emoji = document.getElementById('feedback-emoji');
+      const text = document.getElementById('feedback-text');
 
       if (isCorrect) {
-        AudioFX.playSuccessChime();
-        triggerConfetti();
+        SoundFX.win();
+        fireConfetti();
 
         STATE.stars++;
-        STATE.todayCompleted++;
+        STATE.totalAnswered++;
         saveState();
-        updateGlobalUI();
+        updateUIElements();
 
-        const praiseText = questionObj.feedbackCorrect || `Hebat sekali {name}! Jawabanmu betul!`;
-        const personalizedPraise = praiseText.replace(/\{name\}/g, STATE.studentName || 'sayang');
-
-        banner.className = 'transition-all duration-300 rounded-3xl p-4 text-center font-black text-lg sm:text-xl border-4 flex items-center justify-center gap-3 bg-emerald-100 border-emerald-400 text-emerald-800 shadow-md';
+        const praiseMsg = question.praise.replace(/\{name\}/g, STATE.studentName || 'teman kecil');
+        banner.className = 'flex-shrink-0 rounded-xl p-2 text-center font-black text-xs sm:text-sm border-2 flex items-center justify-center gap-2 shadow-md bg-emerald-100 border-emerald-400 text-emerald-900';
         emoji.innerText = '🌟';
-        msg.innerText = personalizedPraise;
+        text.innerText = praiseMsg;
         banner.classList.remove('hidden');
 
-        // SOAL TIDAK AKAN PINDAH SEBELUM SUARA IBU GURU SELESAI BICARA
-        SpeechEngine.speak(personalizedPraise, () => {
+        // Kunci suara: Soal tidak akan berpindah sebelum selesai bicara!
+        VoiceEngine.speak(praiseMsg, () => {
           setTimeout(() => {
             if (STATE.stars > 0 && STATE.stars % 5 === 0) {
-              showRewardMilestoneModal();
+              showRewardModal();
             } else {
-              nextQuestion();
+              STATE.questionIndex++;
+              loadQuestion();
             }
-          }, 600); // Jeda bernapas alami 600ms
+          }, 500);
         });
 
       } else {
-        AudioFX.playPop();
-
-        const encourageText = questionObj.feedbackWrong || `Tidak apa-apa {name}, yuk kita coba lagi ya sayang!`;
-        const personalizedEncourage = encourageText.replace(/\{name\}/g, STATE.studentName || 'sayang');
-
-        banner.className = 'transition-all duration-300 rounded-3xl p-4 text-center font-black text-lg sm:text-xl border-4 flex items-center justify-center gap-3 bg-amber-100 border-amber-400 text-amber-800 shadow-md';
+        SoundFX.pop();
+        const retryMsg = 'Belum pas. Yuk kita coba lagi bersama Ibu Guru!';
+        banner.className = 'flex-shrink-0 rounded-xl p-2 text-center font-black text-xs sm:text-sm border-2 flex items-center justify-center gap-2 shadow-md bg-amber-100 border-amber-400 text-amber-900';
         emoji.innerText = '💪';
-        msg.innerText = personalizedEncourage;
+        text.innerText = retryMsg;
         banner.classList.remove('hidden');
 
-        // Suara motivasi diselesaikan, lalu anak dipersilakan mencoba kembali
-        SpeechEngine.speak(personalizedEncourage, () => {
+        VoiceEngine.speak(retryMsg, () => {
           setTimeout(() => {
             STATE.isTransitioning = false;
-            playZone.style.pointerEvents = 'auto'; // Buka kembali kunci jawaban
-          }, 400);
+            container.style.pointerEvents = 'auto';
+          }, 350);
         });
       }
     }
 
-    function triggerConfetti() {
+    function fireConfetti() {
       try {
         if (typeof confetti === 'function') {
           confetti({
-            particleCount: 45,
-            spread: 65,
+            particleCount: 35,
+            spread: 55,
             origin: { y: 0.7 }
           });
         }
       } catch (e) {}
     }
 
-    function showRewardMilestoneModal() {
-      const desc = document.getElementById('reward-desc');
-      if (desc) {
-        desc.innerHTML = `Wah ${STATE.studentName || 'sayang'}, kamu sudah mengumpulkan <span class="font-black text-rose-600">${STATE.stars} Bintang</span>! Ibu Guru sangat bangga padamu! 🌟`;
-      }
-      document.getElementById('reward-milestone-modal').classList.remove('hidden');
-      SpeechEngine.speak(`Wah hebat sekali ${STATE.studentName || 'sayang'}, kamu berhasil mengumpulkan bintang baru!`);
+    function showRewardModal() {
+      document.getElementById('reward-modal-msg').innerText = `Wah ${STATE.studentName || 'teman kecil'}, kamu berhasil meraih ${STATE.stars} Bintang!`;
+      document.getElementById('modal-reward').classList.remove('hidden');
+      VoiceEngine.speak('Hebat sekali ' + (STATE.studentName || 'teman kecil') + ', kamu berhasil mengumpulkan lima bintang baru!');
     }
 
     function closeRewardModal() {
-      AudioFX.playPop();
-      document.getElementById('reward-milestone-modal').classList.add('hidden');
-      nextQuestion();
+      SoundFX.pop();
+      document.getElementById('modal-reward').classList.add('hidden');
+      STATE.questionIndex++;
+      loadQuestion();
     }
 
-    function toggleVoiceGlobal() {
-      STATE.voiceEnabled = !STATE.voiceEnabled;
-      const btn = document.getElementById('btn-toggle-voice');
-      if (STATE.voiceEnabled) {
+    function toggleSoundGlobal() {
+      STATE.soundEnabled = !STATE.soundEnabled;
+      const btn = document.getElementById('btn-toggle-sound');
+      if (STATE.soundEnabled) {
         btn.innerText = '🔊';
         btn.classList.replace('bg-slate-300', 'bg-rose-400');
-        SpeechEngine.speak(`Suara Ibu Guru aktif kembali sayang!`);
+        VoiceEngine.speak('Suara aktif kembali!');
       } else {
-        SpeechEngine.stop();
+        VoiceEngine.stop();
         btn.innerText = '🔇';
         btn.classList.replace('bg-rose-400', 'bg-slate-300');
       }
     }
 
-    function playTeacherIntroGreeting() {
+    function playIntroVoice() {
       const name = STATE.studentName || 'teman kecil';
-      SpeechEngine.speak(`Halo ${name} sayang! Ibu Guru senang sekali bisa menemani kamu bermain seribu petualangan gambar hari ini! Yuk kita mulai belajar!`);
+      VoiceEngine.speak('Halo ' + name + '! Ibu Guru siap menemani kamu berpetualang dari level termudah! Yuk kita mulai!');
     }
 
-    /* =========================================================================
-       GERBANG ORANG TUA & RESET DATA
-       ========================================================================= */
-    let currentParentMath = { a: 2, b: 3, answer: 5 };
+    /* Modal Siswa */
+    function openNameModal(isUserAction = true) {
+      if (isUserAction) SoundFX.pop();
+      document.getElementById('input-student-name').value = STATE.studentName || '';
+      selectAvatar(STATE.studentAvatar || '👧');
+      document.getElementById('modal-name').classList.remove('hidden');
+    }
 
+    function selectAvatar(emoji) {
+      STATE.studentAvatar = emoji;
+      document.querySelectorAll('.avatar-opt').forEach(btn => {
+        if (btn.innerText.trim() === emoji) {
+          btn.className = 'avatar-opt text-2xl p-1.5 rounded-xl border border-rose-400 bg-rose-100 ring-2 ring-rose-300';
+        } else {
+          btn.className = 'avatar-opt text-2xl p-1.5 rounded-xl border border-slate-200 bg-white';
+        }
+      });
+    }
+
+    function saveStudentNameAndStart() {
+      SoundFX.pop();
+      const input = document.getElementById('input-student-name');
+      let val = input.value.trim();
+      if (!val) val = 'Teman Kecil';
+
+      STATE.studentName = val;
+      saveState();
+      updateUIElements();
+      document.getElementById('modal-name').classList.add('hidden');
+      playIntroVoice();
+    }
+
+    /* Gerbang Orang Tua */
+    let mathGate = { a: 2, b: 3, res: 5 };
     function openParentModal() {
-      AudioFX.playPop();
+      SoundFX.pop();
       const a = Math.floor(Math.random() * 4) + 1;
       const b = Math.floor(Math.random() * 5) + 1;
-      currentParentMath = { a, b, answer: a + b };
-
-      document.getElementById('parent-math-question').innerText = `${a} + ${b} = ?`;
-      document.getElementById('parent-math-answer').value = '';
-      document.getElementById('parent-gate-error').classList.add('hidden');
-      document.getElementById('parent-gate-modal').classList.remove('hidden');
+      mathGate = { a, b, res: a + b };
+      document.getElementById('parent-math-display').innerText = `${a} + ${b} = ?`;
+      document.getElementById('input-parent-math').value = '';
+      document.getElementById('modal-parent-gate').classList.remove('hidden');
     }
 
     function closeParentModal() {
-      document.getElementById('parent-gate-modal').classList.add('hidden');
+      document.getElementById('modal-parent-gate').classList.add('hidden');
     }
 
-    function verifyParentAnswer() {
-      const input = document.getElementById('parent-math-answer');
-      const val = parseInt(input.value.trim(), 10);
-      if (val === currentParentMath.answer) {
+    function checkParentMath() {
+      const v = parseInt(document.getElementById('input-parent-math').value.trim(), 10);
+      if (v === mathGate.res) {
         closeParentModal();
         navigateTo('parent');
       } else {
-        document.getElementById('parent-gate-error').classList.remove('hidden');
-        input.value = '';
-        input.focus();
+        document.getElementById('input-parent-math').value = '';
       }
     }
 
-    function updateParentDashboard() {
-      document.getElementById('p-total-stars').innerText = STATE.stars;
-      document.getElementById('p-total-activities').innerText = STATE.todayCompleted;
-      document.getElementById('p-play-time').innerText = `${STATE.playTimeMinutes} mnt`;
-    }
-
-    function resetProgress() {
-      if (confirm('Apakah Ayah/Bunda yakin ingin mereset bintang dan progres soal anak?')) {
+    function resetDataProgress() {
+      if (confirm('Reset semua bintang dan level?')) {
         STATE.stars = 0;
-        STATE.todayCompleted = 0;
+        STATE.totalAnswered = 0;
+        STATE.currentLevel = 1;
+        STATE.highestLevel = 1;
         saveState();
-        updateGlobalUI();
-        updateParentDashboard();
+        updateUIElements();
+        navigateTo('home');
       }
     }
 
-    function updateGlobalUI() {
-      const starEl = document.getElementById('star-counter');
-      if (starEl) starEl.innerText = STATE.stars;
-
-      const statCount = document.getElementById('stat-completed-count');
-      if (statCount) statCount.innerText = STATE.todayCompleted;
-
-      const strip = document.getElementById('star-strip');
-      if (strip) {
-        const starIcons = strip.querySelectorAll('span');
-        const activeCount = STATE.stars % 5;
-        starIcons.forEach((s, idx) => {
-          if (idx < (activeCount === 0 && STATE.stars > 0 ? 5 : activeCount)) {
-            s.className = 'text-2xl opacity-100 animate-wiggle';
-          } else {
-            s.className = 'text-2xl opacity-30';
-          }
-        });
-      }
-    }
-
-    /* =========================================================================
-       INISIALISASI SAAT HALAMAN DIMUAT
-       ========================================================================= */
+    /* Inisialisasi */
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedState();
-      renderCategoryGrid();
-      SpeechEngine.initVoices();
+      renderLevelButtons();
+      VoiceEngine.init();
 
-      // Jika belum ada nama tersimpan, langsung munculkan pop-up perkenalan
-      if (!STATE.studentName || STATE.studentName.trim() === '') {
+      if (!STATE.studentName) {
         openNameModal(false);
       }
 
-      setInterval(() => {
-        STATE.playTimeMinutes++;
-      }, 60000);
-
       document.body.addEventListener('click', () => {
-        AudioFX.init();
+        SoundFX.init();
       }, { once: true });
     });
   </script>
