@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Buku Aktivitas Anak Pintar - Interaktif</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka & Quicksand -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800;900&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Global lock for touch-scrolling prevention on active game areas */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Quicksand', cursive, sans-serif;
+      touch-action: pan-y;
+      background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fef3c7 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Prevent scrolling inside drawing canvas and interactive cards */
+    .touch-draw-area {
+      touch-action: none;
+    }
+
+    /* Pop bouncy animations */
+    .btn-bounce {
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+    }
+    .btn-bounce:active {
+      transform: scale(0.92) translateY(2px);
+    }
+
+    /* Shaking for wrong answers */
+    @keyframes shakeAnimation {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .shake {
+      animation: shakeAnimation 0.4s ease-in-out;
+    }
+
+    /* Pulse for celebration */
+    @keyframes cheerPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .cheer {
+      animation: cheerPulse 0.5s ease-in-out;
+    }
+
+    @keyframes popInBounce {
+      0% { transform: scale(0.4) rotate(-5deg); opacity: 0; }
+      60% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+      80% { transform: scale(0.96) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .popup-bounce {
+      animation: popInBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes starTrophyPop {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .star-pop-1 { animation: starTrophyPop 0.4s ease 0.15s both; }
+    .star-pop-2 { animation: starTrophyPop 0.4s ease 0.3s both; }
+    .star-pop-3 { animation: starTrophyPop 0.4s ease 0.45s both; }
+
+    @keyframes ribbonFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(4deg); }
+    }
+    .float-fun {
+      animation: ribbonFloat 2s ease-in-out infinite;
+    }
+
+    /* Smooth shadow elevation */
+    .card-bubble {
+      box-shadow: 0 10px 0 rgba(0, 0, 0, 0.08), 0 15px 25px rgba(0, 0, 0, 0.06);
+    }
+    .card-bubble-sm {
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.07);
+    }
+
+    /* Dot connection points */
+    .dot-node {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 3.5px solid #ffffff;
+      box-shadow: 0 0 0 3px currentColor;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .dot-node.active {
+      transform: scale(1.35);
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-between p-2 sm:p-4 text-slate-800">
+
+  <!-- Header Bar -->
+  <header class="w-full max-w-lg bg-white/95 backdrop-blur-md rounded-3xl p-3 card-bubble mb-2 border-3 border-amber-200 flex flex-col gap-2">
+    <div class="flex items-center justify-between">
+      <!-- Title & Module Badge -->
+      <div class="flex items-center gap-2">
+        <span class="text-3xl animate-bounce">🎨</span>
+        <div>
+          <h1 class="text-lg font-black text-amber-900 leading-tight tracking-wide flex items-center gap-1.5">
+            BUKU AKTIVITAS CERIA
+          </h1>
+          <span id="module-badge" class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+            Modul 1: Asosiasi Visual
+          </span>
+        </div>
+      </div>
+
+      <!-- Sound Toggle & Level Selector -->
+      <div class="flex items-center gap-1.5">
+        <button id="btn-sound" class="w-10 h-10 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-800 font-extrabold flex items-center justify-center btn-bounce card-bubble-sm" title="Matikan/Nyalakan Suara">
+          🔊
+        </button>
+        <button id="btn-menu" class="w-10 h-10 rounded-2xl bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-black flex items-center justify-center btn-bounce card-bubble-sm text-sm" title="Daftar Lembar Kerja">
+          📑
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress Bar & Page Status -->
+    <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+      <div class="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200">
+        <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 2%;"></div>
+      </div>
+      <span id="page-indicator" class="text-xs font-black text-slate-600 min-w-[65px] text-right">
+        HAL 1 / 20
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Playground Card (A5 Aspect ratio optimized) -->
+  <main class="w-full max-w-lg bg-white rounded-3xl card-bubble border-4 border-amber-300 p-3 sm:p-4 flex-1 flex flex-col justify-between relative overflow-hidden min-h-[480px]">
+    
+    <!-- Activity Title & Instructions -->
+    <div class="text-center mb-2">
+      <h2 id="activity-title" class="text-lg sm:text-xl font-black text-slate-900 tracking-wide">
+        1. Jalur Menyilang Hewan Lucu
+      </h2>
+      <p id="activity-desc" class="text-xs sm:text-sm font-bold text-slate-600 bg-amber-50 rounded-xl py-1 px-3 inline-block mt-1 border border-amber-200">
+        Sentuh dan tarik garis memandu setiap hewan ke makanan kesukaannya!
+      </p>
+    </div>
+
+    <!-- Playground Dynamic Container -->
+    <div id="playground-container" class="relative w-full flex-1 flex items-center justify-center rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 p-2 touch-draw-area overflow-hidden">
+      <!-- Dynamic interactive activity injected via JavaScript here -->
+    </div>
+
+    <!-- Bottom Drawing Tools (Canvas crayon selector) -->
+    <div id="toolbar-drawing" class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 hidden">
+      <!-- Color Palette -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-black text-slate-500">WARNA:</span>
+        <button data-color="#2563eb" class="w-7 h-7 rounded-full bg-blue-600 border-2 border-white ring-2 ring-blue-500 btn-bounce color-swatch"></button>
+        <button data-color="#ef4444" class="w-7 h-7 rounded-full bg-red-500 border-2 border-white btn-bounce color-swatch"></button>
+        <button data-color="#10b981" class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white btn-bounce color-swatch"></button>
+        <button data-color="#f59e0b" class="w-7 h-7 rounded-full bg-amber-500 border-2 border-white btn-bounce color-swatch"></button>
+        <button data-color="#a855f7" class="w-7 h-7 rounded-full bg-purple-500 border-2 border-white btn-bounce color-swatch"></button>
+      </div>
+
+      <!-- Action: Clear / Eraser -->
+      <div class="flex items-center gap-1.5">
+        <button id="btn-clear-canvas" class="px-3 py-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-800 text-xs font-black btn-bounce flex items-center gap-1">
+          <span>🧹</span> Hapus
+        </button>
+        <button id="btn-finish-drawing" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black btn-bounce flex items-center gap-1 shadow-md shadow-emerald-200">
+          <span>✨</span> Selesai!
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Navigation Controls -->
+  <footer class="w-full max-w-lg flex items-center justify-between gap-3 mt-2 sm:mt-3">
+    <button id="btn-prev" class="flex-1 py-3 px-4 rounded-2xl bg-white text-slate-700 font-black text-base border-3 border-slate-200 card-bubble-sm hover:bg-slate-50 flex items-center justify-center gap-2 btn-bounce">
+      <span>⬅️</span> Sebelum
+    </button>
+    <button id="btn-reset-page" class="w-14 py-3 rounded-2xl bg-amber-100 text-amber-800 font-black text-lg border-2 border-amber-300 card-bubble-sm flex items-center justify-center btn-bounce" title="Mulai Ulang Halaman">
+      🔄
+    </button>
+    <button id="btn-next" class="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-base card-bubble-sm shadow-emerald-200 hover:opacity-95 flex items-center justify-center gap-2 btn-bounce">
+      Lanjut <span>➡️</span>
+    </button>
+  </footer>
+
+  <!-- Festive Success Modal Popup -->
+  <div id="modal-success" class="fixed inset-0 bg-slate-900/65 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 card-bubble border-4 border-amber-400 text-center relative overflow-hidden popup-bounce">
+      <!-- Decorative Background Confetti Spots -->
+      <div class="absolute -top-10 -right-10 w-28 h-28 bg-amber-100 rounded-full pointer-events-none -z-10"></div>
+      <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-emerald-100 rounded-full pointer-events-none -z-10"></div>
+
+      <!-- Festive Floating Icon -->
+      <div class="text-6xl sm:text-7xl mb-1 float-fun select-none" id="success-icon">
+        🎉
+      </div>
+
+      <!-- 3 Animated Gold Stars -->
+      <div class="flex items-center justify-center gap-2 text-3xl sm:text-4xl my-2">
+        <span class="star-pop-1">⭐</span>
+        <span class="star-pop-2 text-4xl sm:text-5xl">🌟</span>
+        <span class="star-pop-3">⭐</span>
+      </div>
+
+      <!-- Dynamic Praise Title & Subtitle -->
+      <h3 id="success-title" class="text-2xl font-black text-amber-900 tracking-wide mt-1">
+        HEBAT SEKALI!
+      </h3>
+      <p id="success-desc" class="text-sm font-extrabold text-slate-600 my-2 px-2">
+        Kamu berhasil menyelesaikan tantangan ini dengan sangat pintar!
+      </p>
+
+      <!-- Action Buttons in Popup -->
+      <div class="flex flex-col gap-2.5 mt-4">
+        <button id="btn-popup-continue" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white font-black text-base shadow-lg shadow-emerald-200 border-2 border-emerald-400 hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2">
+          Lanjut Halaman Berikutnya <span>🚀</span>
+        </button>
+        <button id="btn-popup-replay" class="w-full py-2.5 px-4 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-black text-sm border-2 border-amber-300 active:scale-95 transition-all flex items-center justify-center gap-2">
+          <span>🔄</span> Mainkan Lagi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Level Selector Menu -->
+  <div id="modal-menu" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-4 card-bubble max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span>📚</span> Pilih Lembar Aktivitas
+        </h3>
+        <button id="btn-close-menu" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm flex items-center justify-center">
+          ✕
+        </button>
+      </div>
+
+      <!-- Quick Filter Module Tabs -->
+      <div class="grid grid-cols-3 gap-1.5 my-2">
+        <button data-mod-filter="1" class="py-1.5 px-1 rounded-xl text-xs font-bold bg-blue-500 text-white filter-tab btn-bounce text-center">Modul 1</button>
+        <button data-mod-filter="2" class="py-1.5 px-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 filter-tab btn-bounce text-center">Modul 2</button>
+        <button data-mod-filter="3" class="py-1.5 px-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 filter-tab btn-bounce text-center">Modul 3</button>
+      </div>
+
+      <!-- Page List Grid -->
+      <div id="page-grid-list" class="grid grid-cols-4 sm:grid-cols-5 gap-2 overflow-y-auto flex-1 p-1">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebratory Confetti Canvas (hidden by default) -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-40 hidden"></canvas>
+
+  <script>
+    /* Audio Synthesis via Web Audio API (No external sound files required) */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playPop() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+      }
+      playSuccess() {
+        if (!this.enabled) return;
+        this.init();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.25, this.ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.08);
+          osc.stop(this.ctx.currentTime + idx * 0.08 + 0.25);
+        });
+      }
+      playWrong() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(110, this.ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.2);
+      }
+      playFanfare() {
+        if (!this.enabled) return;
+        this.init();
+        // Joyous trumpet-like fanfare: C5, G5, C6, E6, G6
+        const notes = [
+          { f: 523.25, d: 0.1, t: 0.0 },
+          { f: 659.25, d: 0.1, t: 0.1 },
+          { f: 783.99, d: 0.12, t: 0.2 },
+          { f: 1046.50, d: 0.35, t: 0.34 },
+          { f: 1318.51, d: 0.45, t: 0.48 }
+        ];
+        notes.forEach(note => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(note.f, this.ctx.currentTime + note.t);
+          gain.gain.setValueAtTime(0.28, this.ctx.currentTime + note.t);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + note.t + note.d);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + note.t);
+          osc.stop(this.ctx.currentTime + note.t + note.d);
+        });
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* 20 Curated high-engagement activities representing all 3 modules */
+    const activities = [
+      // MODUL 1: Asosiasi & Pencocokan Visual
+      {
+        id: 1,
+        module: 1,
+        moduleName: "Modul 1: Asosiasi Visual",
+        title: "1. Pasangkan Sayuran Kembar",
+        desc: "Tarik garis menghubungkan sayur di kiri ke pasangan kembarnya di kanan!",
+        type: "matching",
+        left: [
+          { id: 'v1', icon: '🥕', label: 'Wortel' },
+          { id: 'v2', icon: '🥦', label: 'Brokoli' },
+          { id: 'v3', icon: '🍆', label: 'Terong' },
+          { id: 'v4', icon: '🍅', label: 'Tomat' }
+        ],
+        right: [
+          { id: 'v3', icon: '🍆', label: 'Terong' },
+          { id: 'v1', icon: '🥕', label: 'Wortel' },
+          { id: 'v4', icon: '🍅', label: 'Tomat' },
+          { id: 'v2', icon: '🥦', label: 'Brokoli' }
+        ]
+      },
+      {
+        id: 2,
+        module: 1,
+        moduleName: "Modul 1: Asosiasi Visual",
+        title: "2. Hewan & Makanan Kesukaan",
+        desc: "Tarik garis menghubungkan hewan ceria ke hidangan favoritnya!",
+        type: "matching",
+        left: [
+          { id: 'f1', icon: '🐒', label: 'Monyet' },
+          { id: 'f2', icon: '🐰', label: 'Kelinci' },
+          { id: 'f3', icon: '🐱', label: 'Kucing' },
+          { id: 'f4', icon: '🐶', label: 'Anjing' }
+        ],
+        right: [
+          { id: 'f2', icon: '🥕', label: 'Wortel Manis' },
+          { id: 'f1', icon: '🍌', label: 'Pisang Segar' },
+          { id: 'f4', icon: '🦴', label: 'Tulang Gurih' },
+          { id: 'f3', icon: '🐟', label: 'Ikan Segar' }
+        ]
+      },
+      {
+        id: 3,
+        module: 1,
+        moduleName: "Modul 1: Asosiasi Visual",
+        title: "3. Kendaraan & Jalur Melaju",
+        desc: "Di manakah kendaraan ini melaju? Tarik garis ke jalurnya!",
+        type: "matching",
+        left: [
+          { id: 'k1', icon: '✈️', label: 'Pesawat' },
+          { id: 'k2', icon: '🚢', label: 'Kapal Laut' },
+          { id: 'k3', icon: '🚂', label: 'Kereta Api' },
+          { id: 'k4', icon: '🚗', label: 'Mobil' }
+        ],
+        right: [
+          { id: 'k2', icon: '🌊', label: 'Lautan Biru' },
+          { id: 'k1', icon: '☁️', label: 'Langit Awan' },
+          { id: 'k4', icon: '🛣️', label: 'Jalan Aspal' },
+          { id: 'k3', icon: '🛤️', label: 'Rel Baja' }
+        ]
+      },
+      {
+        id: 4,
+        module: 1,
+        moduleName: "Modul 1: Asosiasi Visual",
+        title: "4. Cocokkan Bayangan Siluet",
+        desc: "Pasangkan benda cerah ke bentuk bayangan hitamnya!",
+        type: "matching",
+        left: [
+          { id: 's1', icon: '⭐', label: 'Bintang' },
+          { id: 's2', icon: '🍎', label: 'Apel' },
+          { id: 's3', icon: '🚗', label: 'Mobil' },
+          { id: 's4', icon: '🚀', label: 'Roket' }
+        ],
+        right: [
+          { id: 's2', icon: '🍎', label: 'Siluet 1', silhouette: true },
+          { id: 's4', icon: '🚀', label: 'Siluet 2', silhouette: true },
+          { id: 's1', icon: '⭐', label: 'Siluet 3', silhouette: true },
+          { id: 's3', icon: '🚗', label: 'Siluet 4', silhouette: true }
+        ]
+      },
+      {
+        id: 5,
+        module: 1,
+        moduleName: "Modul 1: Asosiasi Visual",
+        title: "5. Cari Satu Gambar yang Berbeda",
+        desc: "Sentuh satu gambar yang jenisnya tidak sama dengan yang lain!",
+        type: "odd-one-out",
+        question: "Manakah yang BUKAN buah-buahan segar?",
+        options: [
+          { id: 1, icon: '🍎', label: 'Apel', isOdd: false },
+          { id: 2, icon: '🍌', label: 'Pisang', isOdd: false },
+          { id: 3, icon: '🚗', label: 'Mobil', isOdd: true },
+          { id: 4, icon: '🍇', label: 'Anggur', isOdd: false }
+        ]
+      },
+      {
+        id: 6,
+        module: 1,
+        moduleName: "Modul 1: Asosiasi Visual",
+        title: "6. Benda & Bagian Tubuh",
+        desc: "Tarik garis menghubungkan perlengkapan ke bagian tubuh yang memakai!",
+        type: "matching",
+        left: [
+          { id: 'b1', icon: '🧢', label: 'Topi' },
+          { id: 'b2', icon: '👟', label: 'Sepatu' },
+          { id: 'b3', icon: '👓', label: 'Kacamata' }
+        ],
+        right: [
+          { id: 'b2', icon: '🦶', label: 'Kaki' },
+          { id: 'b1', icon: '👦', label: 'Kepala' },
+          { id: 'b3', icon: '👀', label: 'Mata' }
+        ]
+      },
+
+      // MODUL 2: Motorik Halus, Pre-Writing & Labirin
+      {
+        id: 7,
+        module: 2,
+        moduleName: "Modul 2: Motorik & Labirin",
+        title: "7. Tebalkan Garis Lurus Horizontal",
+        desc: "Gunakan jarimu untuk menebalkan garis lurus dari kiri ke kanan!",
+        type: "tracing",
+        paths: [
+          { start: '👮‍♂️', end: '🦹', color: '#2563eb', shape: 'line' },
+          { start: '👨‍🚒', end: '🔥', color: '#ef4444', shape: 'line' },
+          { start: '👩‍⚕️', end: '🏥', color: '#10b981', shape: 'line' }
+        ]
+      },
+      {
+        id: 8,
+        module: 2,
+        moduleName: "Modul 2: Motorik & Labirin",
+        title: "8. Tebalkan Garis Zig-Zag Bukit",
+        desc: "Tebalkan jalur zig-zag tajam dari roket menuju planet angkasa!",
+        type: "tracing",
+        paths: [
+          { start: '🚀', end: '🪐', color: '#3b82f6', shape: 'zigzag' },
+          { start: '🐸', end: '🪷', color: '#10b981', shape: 'zigzag' }
+        ]
+      },
+      {
+        id: 9,
+        module: 2,
+        moduleName: "Modul 2: Motorik & Labirin",
+        title: "9. Tebalkan Garis Gelombang Ombak",
+        desc: "Tebalkan liukan ombak lembut menuju pulau seberang!",
+        type: "tracing",
+        paths: [
+          { start: '⛵', end: '🏝️', color: '#0284c7', shape: 'wave' },
+          { start: '🐬', end: '🌊', color: '#06b6d4', shape: 'wave' }
+        ]
+      },
+      {
+        id: 10,
+        module: 2,
+        moduleName: "Modul 2: Motorik & Labirin",
+        title: "10. Tebalkan Spiral Rumah Siput",
+        desc: "Tebalkan putaran melingkar dari titik pusat ke arah luar!",
+        type: "tracing",
+        paths: [
+          { start: '🐌', end: '🌀', color: '#8b5cf6', shape: 'spiral' }
+        ]
+      },
+      {
+        id: 11,
+        module: 2,
+        moduleName: "Modul 2: Motorik & Labirin",
+        title: "11. Labirin Anak Ayam Menuju Induk",
+        desc: "Tarik garis memandu anak ayam kuning melewati lorong labirin!",
+        type: "maze",
+        startIcon: '🐥',
+        endIcon: '🐔'
+      },
+      {
+        id: 12,
+        module: 2,
+        moduleName: "Modul 2: Motorik & Labirin",
+        title: "12. Labirin Mobil Menuju Garasi Rumah",
+        desc: "Pandu mobil merah melaju santai melewati belokan menuju rumah!",
+        type: "maze",
+        startIcon: '🚗',
+        endIcon: '🏡'
+      },
+      {
+        id: 13,
+        module: 2,
+        moduleName: "Modul 2: Motorik & Labirin",
+        title: "13. Hubungkan Titik Angka 1 sampai 5",
+        desc: "Tarik garis dari titik angka 1 berturut-turut hingga angka 5!",
+        type: "dot-to-dot",
+        dots: [
+          { num: 1, x: 50, y: 15 },
+          { num: 2, x: 80, y: 40 },
+          { num: 3, x: 70, y: 80 },
+          { num: 4, x: 30, y: 80 },
+          { num: 5, x: 20, y: 40 }
+        ]
+      },
+
+      // MODUL 3: Geometri, Ukuran & Penalaran Logika
+      {
+        id: 14,
+        module: 3,
+        moduleName: "Modul 3: Geometri & Logika",
+        title: "14. Mana yang Lebih Besar?",
+        desc: "Sentuh hewan atau benda yang berukuran LEBIH BESAR!",
+        type: "comparison",
+        question: "Pilih hewan yang badannya LEBIH BESAR:",
+        options: [
+          { id: 1, icon: '🐘', name: 'Gajah Raksasa', isCorrect: true, scale: 'text-7xl' },
+          { id: 2, icon: '🐁', name: 'Tikus Kecil', isCorrect: false, scale: 'text-3xl' }
+        ]
+      },
+      {
+        id: 15,
+        module: 3,
+        moduleName: "Modul 3: Geometri & Logika",
+        title: "15. Mana yang Lebih Panjang?",
+        desc: "Sentuh pensil yang memiliki ukuran LEBIH PANJANG!",
+        type: "comparison",
+        question: "Pilih pensil yang LEBIH PANJANG:",
+        options: [
+          { id: 1, icon: '✏️', name: 'Pensil Pendek', isCorrect: false, barWidth: 'w-24' },
+          { id: 2, icon: '✏️', name: 'Pensil Panjang', isCorrect: true, barWidth: 'w-48' }
+        ]
+      },
+      {
+        id: 16,
+        module: 3,
+        moduleName: "Modul 3: Geometri & Logika",
+        title: "16. Pasangkan Bentuk ke Benda Nyata",
+        desc: "Tarik garis dari bentuk geometri ke benda berwujud serupa!",
+        type: "matching",
+        left: [
+          { id: 'g1', icon: '●', label: 'Lingkaran', color: '#ef4444' },
+          { id: 'g2', icon: '▲', label: 'Segitiga', color: '#3b82f6' },
+          { id: 'g3', icon: '■', label: 'Persegi', color: '#10b981' }
+        ],
+        right: [
+          { id: 'g2', icon: '🍕', label: 'Pizza Iris' },
+          { id: 'g3', icon: '📘', label: 'Buku Kotak' },
+          { id: 'g1', icon: '⏰', label: 'Jam Bulat' }
+        ]
+      },
+      {
+        id: 17,
+        module: 3,
+        moduleName: "Modul 3: Geometri & Logika",
+        title: "17. Lanjutkan Pola Buah (AB-AB)",
+        desc: "Perhatikan deretan: Apel, Pisang, Apel, Pisang... Buah apa selanjutnya?",
+        type: "pattern",
+        sequence: ['🍎', '🍌', '🍎', '🍌'],
+        choices: [
+          { icon: '🍎', isCorrect: true },
+          { icon: '🍌', isCorrect: false },
+          { icon: '🍇', isCorrect: false }
+        ]
+      },
+      {
+        id: 18,
+        module: 3,
+        moduleName: "Modul 3: Geometri & Logika",
+        title: "18. Cari Hewan yang Menghadap ke Kanan",
+        desc: "Sentuh satu hewan yang sedang berjalan ke arah KANAN 👉!",
+        type: "direction",
+        question: "Manakah ikan yang berenang ke KANAN?",
+        options: [
+          { id: 1, icon: '🐟', flip: false, isCorrect: true },
+          { id: 2, icon: '🐟', flip: true, isCorrect: false },
+          { id: 3, icon: '🐟', flip: true, isCorrect: false }
+        ]
+      },
+      {
+        id: 19,
+        module: 3,
+        moduleName: "Modul 3: Geometri & Logika",
+        title: "19. Hitung Ada Berapa Buah Apel",
+        desc: "Hitung semua buah apel di dalam keranjang lalu sentuh angka yang pas!",
+        type: "counting",
+        items: ['🍎', '🍎', '🍎', '🍎'],
+        correctCount: 4,
+        choices: [3, 4, 5]
+      },
+      {
+        id: 20,
+        module: 3,
+        moduleName: "Modul 3: Geometri & Logika",
+        title: "20. Piagam Bintang Juara Hebat!",
+        desc: "Hore! Kamu berhasil menyelesaikan semua modul tantangan belajar!",
+        type: "certificate"
+      }
+    ];
+
+    /* App State Manager */
+    const state = {
+      currentPage: parseInt(localStorage.getItem('kids_act_page') || '1'),
+      brushColor: '#2563eb',
+      completedPages: JSON.parse(localStorage.getItem('kids_act_completed') || '[]'),
+      soundMuted: localStorage.getItem('kids_act_muted') === 'true'
+    };
+
+    if (state.soundMuted) {
+      sound.enabled = false;
+      document.getElementById('btn-sound').innerText = '🔇';
+    }
+
+    const container = document.getElementById('playground-container');
+    const titleEl = document.getElementById('activity-title');
+    const descEl = document.getElementById('activity-desc');
+    const badgeEl = document.getElementById('module-badge');
+    const progressEl = document.getElementById('progress-bar');
+    const pageIndEl = document.getElementById('page-indicator');
+    const toolbarDrawing = document.getElementById('toolbar-drawing');
+
+    /* MATCHING TEMPLATE BUILDER */
+    function renderMatching(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="w-full h-full flex flex-col justify-between relative py-2">
+          <svg id="svg-connect-lines" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
+          <div class="flex justify-between items-center w-full h-full px-2 sm:px-4">
+            <!-- Left Items -->
+            <div class="flex flex-col justify-around h-full gap-3">
+              ${act.left.map((item, idx) => `
+                <div data-id="${item.id}" data-side="left" class="match-card match-left flex items-center justify-between gap-2 bg-white rounded-2xl p-2.5 sm:p-3 border-2 border-slate-200 card-bubble-sm min-w-[120px] sm:min-w-[150px] btn-bounce cursor-pointer">
+                  <span class="text-3xl sm:text-4xl" style="${item.color ? `color:${item.color}` : ''}">${item.icon}</span>
+                  <span class="text-xs sm:text-sm font-extrabold text-slate-700">${item.label}</span>
+                  <div class="dot-node text-blue-500 bg-blue-500"></div>
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Right Items -->
+            <div class="flex flex-col justify-around h-full gap-3">
+              ${act.right.map((item, idx) => `
+                <div data-id="${item.id}" data-side="right" class="match-card match-right flex items-center justify-between gap-2 bg-white rounded-2xl p-2.5 sm:p-3 border-2 border-slate-200 card-bubble-sm min-w-[120px] sm:min-w-[150px] btn-bounce cursor-pointer">
+                  <div class="dot-node text-emerald-500 bg-emerald-500"></div>
+                  <span class="text-xs sm:text-sm font-extrabold text-slate-700">${item.label}</span>
+                  <span class="text-3xl sm:text-4xl ${item.silhouette ? 'filter brightness-0' : ''}" style="${item.color ? `color:${item.color}` : ''}">${item.icon}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      let selectedLeft = null;
+      const connections = new Map();
+      const leftCards = container.querySelectorAll('.match-left');
+      const rightCards = container.querySelectorAll('.match-right');
+      const svg = document.getElementById('svg-connect-lines');
+
+      function drawLines() {
+        svg.innerHTML = '';
+        connections.forEach((targetId, srcId) => {
+          const lEl = container.querySelector(`.match-left[data-id="${srcId}"] .dot-node`);
+          const rEl = container.querySelector(`.match-right[data-id="${targetId}"] .dot-node`);
+          if (lEl && rEl) {
+            const svgRect = svg.getBoundingClientRect();
+            const lRect = lEl.getBoundingClientRect();
+            const rRect = rEl.getBoundingClientRect();
+            const x1 = lRect.left + lRect.width / 2 - svgRect.left;
+            const y1 = lRect.top + lRect.height / 2 - svgRect.top;
+            const x2 = rRect.left + rRect.width / 2 - svgRect.left;
+            const y2 = rRect.top + rRect.height / 2 - svgRect.top;
+
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('stroke', '#10b981');
+            line.setAttribute('stroke-width', '5');
+            line.setAttribute('stroke-linecap', 'round');
+            line.setAttribute('stroke-dasharray', '8,6');
+            svg.appendChild(line);
+          }
+        });
+      }
+
+      leftCards.forEach(card => {
+        card.addEventListener('pointerdown', () => {
+          sound.playPop();
+          leftCards.forEach(c => c.classList.remove('ring-4', 'ring-blue-400', 'bg-blue-50'));
+          card.classList.add('ring-4', 'ring-blue-400', 'bg-blue-50');
+          selectedLeft = card.getAttribute('data-id');
+        });
+      });
+
+      rightCards.forEach(card => {
+        card.addEventListener('pointerdown', () => {
+          if (!selectedLeft) return;
+          const targetId = card.getAttribute('data-id');
+          if (selectedLeft === targetId) {
+            sound.playSuccess();
+            connections.set(selectedLeft, targetId);
+            card.classList.add('ring-4', 'ring-emerald-400', 'bg-emerald-50');
+            drawLines();
+            leftCards.forEach(c => c.classList.remove('ring-4', 'ring-blue-400', 'bg-blue-50'));
+            selectedLeft = null;
+
+            if (connections.size === act.left.length) {
+              triggerGrandCelebration();
+            }
+          } else {
+            sound.playWrong();
+            card.classList.add('shake');
+            setTimeout(() => card.classList.remove('shake'), 400);
+          }
+        });
+      });
+      window.addEventListener('resize', drawLines);
+    }
+
+    /* TRACING & DRAWING ENGINE */
+    function renderTracing(act) {
+      toolbarDrawing.classList.remove('hidden');
+      container.innerHTML = `
+        <div class="relative w-full h-full flex flex-col justify-around p-2">
+          ${act.paths.map(p => `
+            <div class="flex items-center justify-between w-full relative z-0">
+              <span class="text-4xl sm:text-5xl">${p.start}</span>
+              <div class="flex-1 px-4 flex items-center">
+                <svg width="100%" height="60" class="overflow-visible">
+                  ${getSvgPathCode(p.shape, p.color)}
+                </svg>
+              </div>
+              <span class="text-4xl sm:text-5xl">${p.end}</span>
+            </div>
+          `).join('')}
+          <canvas id="paint-canvas" class="absolute inset-0 w-full h-full z-10 touch-draw-area"></canvas>
+        </div>
+      `;
+
+      initPaintCanvas();
+    }
+
+    function getSvgPathCode(shape, color) {
+      if (shape === 'line') {
+        return `<line x1="5" y1="30" x2="98%" y2="30" stroke="${color}" stroke-width="7" stroke-dasharray="10,10" stroke-linecap="round"/>`;
+      } else if (shape === 'zigzag') {
+        return `<path d="M 5,30 L 35,8 L 70,52 L 105,8 L 140,52 L 175,8 L 210,52 L 245,30" stroke="${color}" stroke-width="6" stroke-dasharray="8,8" fill="none" stroke-linecap="round"/>`;
+      } else if (shape === 'wave') {
+        return `<path d="M 5,30 Q 40,0 75,30 T 145,30 T 215,30 T 285,30" stroke="${color}" stroke-width="6" stroke-dasharray="7,7" fill="none" stroke-linecap="round"/>`;
+      } else if (shape === 'spiral') {
+        return `<circle cx="50%" cy="30" r="24" stroke="${color}" stroke-width="6" stroke-dasharray="6,6" fill="none"/>`;
+      }
+      return '';
+    }
+
+    function initPaintCanvas() {
+      const cvs = document.getElementById('paint-canvas');
+      if (!cvs) return;
+      const rect = cvs.parentElement.getBoundingClientRect();
+      cvs.width = rect.width;
+      cvs.height = rect.height;
+      const ctx = cvs.getContext('2d');
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = 12;
+
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      function getPos(e) {
+        const cRect = cvs.getBoundingClientRect();
+        if (e.touches && e.touches[0]) {
+          return {
+            x: e.touches[0].clientX - cRect.left,
+            y: e.touches[0].clientY - cRect.top
+          };
+        }
+        return {
+          x: e.clientX - cRect.left,
+          y: e.clientY - cRect.top
+        };
+      }
+
+      function startDraw(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+        sound.playPop();
+      }
+
+      function drawMove(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const pos = getPos(e);
+        ctx.strokeStyle = state.brushColor;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        lastX = pos.x;
+        lastY = pos.y;
+      }
+
+      function stopDraw(e) {
+        if (isDrawing) {
+          isDrawing = false;
+        }
+      }
+
+      cvs.addEventListener('pointerdown', startDraw);
+      cvs.addEventListener('pointermove', drawMove);
+      cvs.addEventListener('pointerup', stopDraw);
+      cvs.addEventListener('pointercancel', stopDraw);
+
+      document.getElementById('btn-clear-canvas').onclick = () => {
+        sound.playPop();
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+      };
+    }
+
+    /* MAZE TEMPLATE BUILDER */
+    function renderMaze(act) {
+      toolbarDrawing.classList.remove('hidden');
+      container.innerHTML = `
+        <div class="relative w-full h-full flex flex-col justify-between p-2">
+          <div class="flex justify-between items-center px-4 font-black text-sm text-slate-700">
+            <span class="flex items-center gap-1.5"><span class="text-4xl">${act.startIcon}</span> MULAI</span>
+            <span class="flex items-center gap-1.5">TUJUAN <span class="text-4xl">${act.endIcon}</span></span>
+          </div>
+          <div class="relative flex-1 w-full my-2 bg-amber-50 rounded-2xl border-4 border-slate-700 overflow-hidden flex items-center justify-center">
+            <!-- Maze SVG Layout -->
+            <svg width="100%" height="100%" viewBox="0 0 320 220" class="pointer-events-none">
+              <rect x="5" y="5" width="310" height="210" fill="#f8fafc" stroke="#334155" stroke-width="6" rx="8"/>
+              <line x1="15" y1="5" x2="65" y2="5" stroke="#f8fafc" stroke-width="12"/>
+              <line x1="250" y1="215" x2="300" y2="215" stroke="#f8fafc" stroke-width="12"/>
+              <line x1="85" y1="5" x2="85" y2="150" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+              <line x1="165" y1="70" x2="165" y2="215" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+              <line x1="245" y1="5" x2="245" y2="150" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+            <canvas id="paint-canvas" class="absolute inset-0 w-full h-full z-10 touch-draw-area"></canvas>
+          </div>
+        </div>
+      `;
+      initPaintCanvas();
+    }
+
+    /* COMPARISON & SIZE BUILDER */
+    function renderComparison(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="w-full h-full flex flex-col justify-around items-center p-3 text-center">
+          <p class="text-base sm:text-lg font-black text-slate-800">${act.question}</p>
+          <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+            ${act.options.map(opt => `
+              <button data-correct="${opt.isCorrect}" class="comp-option bg-white rounded-3xl p-5 border-4 border-slate-200 card-bubble flex flex-col items-center justify-center gap-3 btn-bounce">
+                <span class="${opt.scale || 'text-5xl'}">${opt.icon}</span>
+                ${opt.barWidth ? `<div class="h-4 bg-amber-400 rounded-full ${opt.barWidth} border-2 border-amber-600"></div>` : ''}
+                <span class="text-sm font-black text-slate-700">${opt.name}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('.comp-option').forEach(btn => {
+        btn.addEventListener('pointerdown', () => {
+          const isCorrect = btn.getAttribute('data-correct') === 'true';
+          if (isCorrect) {
+            btn.classList.add('ring-4', 'ring-emerald-400', 'bg-emerald-50', 'cheer');
+            triggerGrandCelebration();
+          } else {
+            sound.playWrong();
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 400);
+          }
+        });
+      });
+    }
+
+    /* PATTERN COMPLETION BUILDER */
+    function renderPattern(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="w-full h-full flex flex-col justify-around items-center p-3 text-center">
+          <div class="flex items-center justify-center gap-2 bg-amber-50 p-4 rounded-3xl border-3 border-amber-300 card-bubble-sm">
+            ${act.sequence.map(s => `
+              <span class="text-4xl sm:text-5xl">${s}</span>
+            `).join('')}
+            <div id="pattern-target" class="w-14 h-14 rounded-2xl border-3 border-dashed border-amber-500 bg-white flex items-center justify-center text-3xl font-black text-amber-600">
+              ?
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <span class="text-xs font-black text-slate-500">PILIH BUAH BERIKUTNYA:</span>
+            <div class="flex gap-4">
+              ${act.choices.map(c => `
+                <button data-correct="${c.isCorrect}" class="pattern-choice w-16 h-16 rounded-2xl bg-white border-3 border-slate-200 card-bubble flex items-center justify-center text-4xl btn-bounce">
+                  ${c.icon}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('.pattern-choice').forEach(btn => {
+        btn.addEventListener('pointerdown', () => {
+          const isCorrect = btn.getAttribute('data-correct') === 'true';
+          const target = document.getElementById('pattern-target');
+          if (isCorrect) {
+            target.innerHTML = btn.innerHTML;
+            target.classList.add('bg-emerald-100', 'border-emerald-500', 'cheer');
+            triggerGrandCelebration();
+          } else {
+            sound.playWrong();
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 400);
+          }
+        });
+      });
+    }
+
+    /* ODD ONE OUT BUILDER */
+    function renderOddOneOut(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="w-full h-full flex flex-col justify-around items-center p-3 text-center">
+          <p class="text-base sm:text-lg font-black text-slate-800">${act.question}</p>
+          <div class="grid grid-cols-2 gap-4 w-full max-w-xs">
+            ${act.options.map(opt => `
+              <button data-odd="${opt.isOdd}" class="odd-choice bg-white rounded-3xl p-5 border-3 border-slate-200 card-bubble flex flex-col items-center justify-center gap-2 btn-bounce">
+                <span class="text-5xl">${opt.icon}</span>
+                <span class="text-xs font-black text-slate-700">${opt.label}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('.odd-choice').forEach(btn => {
+        btn.addEventListener('pointerdown', () => {
+          const isOdd = btn.getAttribute('data-odd') === 'true';
+          if (isOdd) {
+            btn.classList.add('ring-4', 'ring-emerald-400', 'bg-emerald-50', 'cheer');
+            triggerGrandCelebration();
+          } else {
+            sound.playWrong();
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 400);
+          }
+        });
+      });
+    }
+
+    /* COUNTING BUILDER */
+    function renderCounting(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="w-full h-full flex flex-col justify-around items-center p-3 text-center">
+          <div class="flex flex-wrap items-center justify-center gap-3 bg-rose-50 p-6 rounded-3xl border-3 border-rose-200 card-bubble max-w-sm">
+            ${act.items.map(item => `
+              <span class="text-5xl">${item}</span>
+            `).join('')}
+          </div>
+          <div class="flex flex-col gap-2">
+            <span class="text-xs font-black text-slate-500">BERAPA JUMLAHNYA?</span>
+            <div class="flex gap-4">
+              ${act.choices.map(num => `
+                <button data-num="${num}" class="count-choice w-16 h-16 rounded-2xl bg-white border-3 border-slate-200 card-bubble flex items-center justify-center text-3xl font-black text-indigo-700 btn-bounce">
+                  ${num}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('.count-choice').forEach(btn => {
+        btn.addEventListener('pointerdown', () => {
+          const val = parseInt(btn.getAttribute('data-num'));
+          if (val === act.correctCount) {
+            btn.classList.add('ring-4', 'ring-emerald-400', 'bg-emerald-50', 'cheer');
+            triggerGrandCelebration();
+          } else {
+            sound.playWrong();
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 400);
+          }
+        });
+      });
+    }
+
+    /* FINAL CERTIFICATE BUILDER */
+    function renderCertificate(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="w-full h-full flex flex-col justify-around items-center p-3 text-center bg-gradient-to-b from-amber-50 to-orange-50 rounded-2xl border-4 border-amber-400">
+          <div class="text-5xl animate-bounce">🏆 ⭐ 🎓</div>
+          <h3 class="text-xl font-black text-amber-900 tracking-wide">SERTIFIKAT KELULUSAN</h3>
+          <p class="text-xs font-bold text-slate-600">Diberikan kepada anak pintar & ceria:</p>
+          <input type="text" placeholder="Ketik Nama Anak Di Sini" class="w-3/4 text-center font-black text-base py-2 px-3 rounded-xl border-2 border-amber-400 bg-white text-slate-800 shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-500">
+          <p class="text-[11px] font-semibold text-slate-600 max-w-xs">
+            Selamat! Telah menyelesaikan seluruh tantangan Asosiasi Visual, Motorik Menulis, dan Logika Geometri!
+          </p>
+          <button id="btn-cheer" class="py-2.5 px-6 rounded-2xl bg-amber-500 text-white font-black text-sm card-bubble-sm shadow-amber-300 btn-bounce">
+            Rayakan Kelulusan! 🎉
+          </button>
+        </div>
+      `;
+
+      document.getElementById('btn-cheer').addEventListener('pointerdown', () => {
+        triggerGrandCelebration("JUARA SEJATI! 🏆", "Selamat! Kamu telah resmi menyelesaikan seluruh lembar tantangan belajar!");
+      });
+    }
+
+    function renderDirection(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="w-full h-full flex flex-col justify-around items-center p-3 text-center">
+          <p class="text-base sm:text-lg font-black text-slate-800">${act.question}</p>
+          <div class="flex gap-4 justify-center items-center flex-wrap">
+            ${act.options.map(opt => `
+              <button data-correct="${opt.isCorrect}" class="dir-choice bg-white rounded-3xl p-5 border-3 border-slate-200 card-bubble flex flex-col items-center justify-center gap-2 btn-bounce">
+                <span class="text-5xl ${opt.flip ? '-scale-x-100' : ''} inline-block">${opt.icon}</span>
+                <span class="text-xs font-black text-slate-500">${opt.flip ? 'Kiri 👈' : 'Kanan 👉'}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('.dir-choice').forEach(btn => {
+        btn.addEventListener('pointerdown', () => {
+          const isCorrect = btn.getAttribute('data-correct') === 'true';
+          if (isCorrect) {
+            btn.classList.add('ring-4', 'ring-emerald-400', 'bg-emerald-50', 'cheer');
+            triggerGrandCelebration();
+          } else {
+            sound.playWrong();
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 400);
+          }
+        });
+      });
+    }
+
+    function renderDotToDot(act) {
+      toolbarDrawing.classList.add('hidden');
+      container.innerHTML = `
+        <div class="relative w-full h-full flex flex-col justify-between items-center p-2">
+          <div class="text-xs font-black text-slate-500 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+            Sentuh titik berurutan: 1 ➔ 2 ➔ 3 ➔ 4 ➔ 5
+          </div>
+          <div class="relative flex-1 w-full max-w-sm my-2 bg-white rounded-2xl border-2 border-slate-200 card-bubble-sm overflow-hidden">
+            <svg id="svg-dot-lines" class="absolute inset-0 w-full h-full pointer-events-none"></svg>
+            <div id="dot-container" class="absolute inset-0 w-full h-full">
+              ${act.dots.map(d => `
+                <button data-num="${d.num}" class="dot-btn absolute -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-blue-500 text-white font-black text-base flex items-center justify-center card-bubble-sm border-2 border-white btn-bounce z-10" style="left: ${d.x}%; top: ${d.y}%;">
+                  ${d.num}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      let nextExpected = 1;
+      const clickedDots = [];
+      const svg = document.getElementById('svg-dot-lines');
+
+      container.querySelectorAll('.dot-btn').forEach(btn => {
+        btn.addEventListener('pointerdown', () => {
+          const num = parseInt(btn.getAttribute('data-num'));
+          if (num === nextExpected) {
+            sound.playPop();
+            btn.classList.remove('bg-blue-500');
+            btn.classList.add('bg-emerald-500', 'ring-4', 'ring-emerald-300', 'scale-110');
+            clickedDots.push(btn);
+
+            if (clickedDots.length > 1) {
+              const prev = clickedDots[clickedDots.length - 2].getBoundingClientRect();
+              const curr = btn.getBoundingClientRect();
+              const svgRect = svg.getBoundingClientRect();
+              const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+              line.setAttribute('x1', prev.left + prev.width / 2 - svgRect.left);
+              line.setAttribute('y1', prev.top + prev.height / 2 - svgRect.top);
+              line.setAttribute('x2', curr.left + curr.width / 2 - svgRect.left);
+              line.setAttribute('y2', curr.top + curr.height / 2 - svgRect.top);
+              line.setAttribute('stroke', '#10b981');
+              line.setAttribute('stroke-width', '5');
+              line.setAttribute('stroke-linecap', 'round');
+              line.setAttribute('stroke-dasharray', '6,6');
+              svg.appendChild(line);
+            }
+
+            nextExpected++;
+            if (nextExpected > act.dots.length) {
+              setTimeout(() => {
+                triggerGrandCelebration("BINTANG TERBENTUK! 🌟", "Kamu sukses menyambungkan semua titik angka!");
+              }, 300);
+            }
+          } else {
+            sound.playWrong();
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 400);
+          }
+        });
+      });
+    }
+
+    function loadPage(pageNum) {
+      if (pageNum < 1) pageNum = 1;
+      if (pageNum > activities.length) pageNum = activities.length;
+      state.currentPage = pageNum;
+      localStorage.setItem('kids_act_page', pageNum.toString());
+
+      const currentAct = activities.find(a => a.id === pageNum) || activities[0];
+
+      // Update UI Header
+      titleEl.innerText = currentAct.title;
+      descEl.innerText = currentAct.desc;
+      badgeEl.innerText = currentAct.moduleName;
+      pageIndEl.innerText = `HAL ${currentAct.id} / ${activities.length}`;
+      progressEl.style.width = `${(currentAct.id / activities.length) * 100}%`;
+
+      // Render based on type
+      if (currentAct.type === 'matching') renderMatching(currentAct);
+      else if (currentAct.type === 'tracing') renderTracing(currentAct);
+      else if (currentAct.type === 'maze') renderMaze(currentAct);
+      else if (currentAct.type === 'comparison') renderComparison(currentAct);
+      else if (currentAct.type === 'pattern') renderPattern(currentAct);
+      else if (currentAct.type === 'odd-one-out') renderOddOneOut(currentAct);
+      else if (currentAct.type === 'direction') renderDirection(currentAct);
+      else if (currentAct.type === 'dot-to-dot') renderDotToDot(currentAct);
+      else if (currentAct.type === 'counting') renderCounting(currentAct);
+      else if (currentAct.type === 'certificate') renderCertificate(currentAct);
+      else renderMatching(currentAct);
+    }
+
+    const praiseTitles = [
+      "LUAR BIASA! 🌟",
+      "HEBAT SEKALI! 🥳",
+      "PINTAR BANGET! 🎯",
+      "KAMU JUARA! 🥇",
+      "HOREEE BERHASIL! 🎈"
+    ];
+    const praiseDescs = [
+      "Wah, jawabanmu tepat dan rapi sekali!",
+      "Kamu menyelesaikan tantangan ini seperti anak pintar!",
+      "Keren! Mari lanjut ke halaman seru berikutnya!",
+      "Mata dan tanganmu sungguh lincah dan teliti!",
+      "Bagus sekali! Siap untuk tantangan selanjutnya?"
+    ];
+
+    function triggerGrandCelebration(customTitle = null, customDesc = null) {
+      sound.playFanfare();
+      triggerConfetti();
+
+      const modalSuccess = document.getElementById('modal-success');
+      const titleEl = document.getElementById('success-title');
+      const descEl = document.getElementById('success-desc');
+      const iconEl = document.getElementById('success-icon');
+
+      const randIdx = Math.floor(Math.random() * praiseTitles.length);
+      titleEl.innerText = customTitle || praiseTitles[randIdx];
+      descEl.innerText = customDesc || praiseDescs[randIdx];
+
+      const icons = ['🎉', '🚀', '🦄', '🏆', '🦁', '🌟'];
+      iconEl.innerText = icons[Math.floor(Math.random() * icons.length)];
+
+      setTimeout(() => {
+        modalSuccess.classList.remove('hidden');
+      }, 350);
+    }
+
+    /* Multi-burst Confetti Particle Burst Animation */
+    function triggerConfetti() {
+      const c = document.getElementById('confetti-canvas');
+      c.classList.remove('hidden');
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
+      const ctx = c.getContext('2d');
+      const particles = [];
+      const colors = ['#f43f5e', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#eab308'];
+
+      // Left and right dual cannon burst
+      for (let i = 0; i < 90; i++) {
+        const fromLeft = i % 2 === 0;
+        particles.push({
+          x: fromLeft ? c.width * 0.2 : c.width * 0.8,
+          y: c.height * 0.6,
+          vx: fromLeft ? (Math.random() * 8 + 3) : -(Math.random() * 8 + 3),
+          vy: -(Math.random() * 14 + 8),
+          size: Math.random() * 9 + 4,
+          shape: Math.random() > 0.4 ? 'circle' : 'rect',
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 8,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          gravity: 0.38,
+          alpha: 1
+        });
+      }
+
+      function update() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.alpha -= 0.012;
+          p.rotation += p.rotationSpeed;
+
+          if (p.alpha > 0) {
+            active = true;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            if (p.shape === 'circle') {
+              ctx.beginPath();
+              ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+              ctx.fill();
+            } else {
+              ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+            }
+            ctx.restore();
+          }
+        });
+        if (active) requestAnimationFrame(update);
+        else c.classList.add('hidden');
+      }
+      update();
+    }
+
+    document.getElementById('btn-popup-continue').onclick = () => {
+      sound.playPop();
+      document.getElementById('modal-success').classList.add('hidden');
+      if (state.currentPage < activities.length) {
+        loadPage(state.currentPage + 1);
+      } else {
+        loadPage(1); // loop back or finish
+      }
+    };
+
+    document.getElementById('btn-popup-replay').onclick = () => {
+      sound.playPop();
+      document.getElementById('modal-success').classList.add('hidden');
+      loadPage(state.currentPage);
+    };
+
+    // Drawing toolbar finish button
+    document.getElementById('btn-finish-drawing').onclick = () => {
+      triggerGrandCelebration("GAMBARMU KEREN! 🎨", "Goresan garis dan warnamu rapi sekali!");
+    };
+
+    /* Setup Global Event Listeners */
+    document.getElementById('btn-prev').onclick = () => {
+      sound.playPop();
+      loadPage(state.currentPage - 1);
+    };
+
+    document.getElementById('btn-next').onclick = () => {
+      sound.playPop();
+      loadPage(state.currentPage + 1);
+    };
+
+    document.getElementById('btn-reset-page').onclick = () => {
+      sound.playPop();
+      loadPage(state.currentPage);
+    };
+
+    document.getElementById('btn-sound').onclick = () => {
+      sound.enabled = !sound.enabled;
+      state.soundMuted = !sound.enabled;
+      localStorage.setItem('kids_act_muted', state.soundMuted.toString());
+      document.getElementById('btn-sound').innerText = sound.enabled ? '🔊' : '🔇';
+    };
+
+    // Color Swatches
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+      swatch.onclick = () => {
+        sound.playPop();
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('ring-2', 'ring-blue-500'));
+        swatch.classList.add('ring-2', 'ring-blue-500');
+        state.brushColor = swatch.getAttribute('data-color');
+      };
+    });
+
+    // Menu Modal
+    const modalMenu = document.getElementById('modal-menu');
+    const pageGrid = document.getElementById('page-grid-list');
+    
+    function populateMenuGrid(moduleFilter = null) {
+      pageGrid.innerHTML = '';
+      activities.forEach((act, idx) => {
+        if (moduleFilter && act.module !== parseInt(moduleFilter)) return;
+        const btn = document.createElement('button');
+        btn.className = `p-2 rounded-2xl flex flex-col items-center justify-center font-black text-sm border-2 ${state.currentPage === act.id ? 'bg-amber-400 text-amber-950 border-amber-500' : 'bg-slate-50 text-slate-700 border-slate-200'} btn-bounce card-bubble-sm`;
+        btn.innerHTML = `<span>${act.id}</span>`;
+        btn.onclick = () => {
+          sound.playPop();
+          modalMenu.classList.add('hidden');
+          loadPage(act.id);
+        };
+        pageGrid.appendChild(btn);
+      });
+    }
+
+    document.getElementById('btn-menu').onclick = () => {
+      sound.playPop();
+      populateMenuGrid();
+      modalMenu.classList.remove('hidden');
+    };
+    document.getElementById('btn-close-menu').onclick = () => {
+      sound.playPop();
+      modalMenu.classList.add('hidden');
+    };
+
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.onclick = () => {
+        sound.playPop();
+        document.querySelectorAll('.filter-tab').forEach(t => {
+          t.classList.remove('bg-blue-500', 'text-white');
+          t.classList.add('bg-slate-100', 'text-slate-600');
+        });
+        tab.classList.remove('bg-slate-100', 'text-slate-600');
+        tab.classList.add('bg-blue-500', 'text-white');
+        populateMenuGrid(tab.getAttribute('data-mod-filter'));
+      };
+    });
+
+    // Initial Launch
+    window.onload = () => {
+      loadPage(state.currentPage);
+    };
+  </script>
+</body>
+</html>
